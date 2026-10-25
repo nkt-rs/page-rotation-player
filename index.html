@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Rotation Setup</title>
+<style>
+  :root {
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --stepper-bg: #eef2ff;
+
+    --fs-h1:              clamp(18px, 2.6vmin, 5.2vmin);
+    --fs-sub:             clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-label:           clamp(11px, 1.5vmin, 3vmin);
+    --fs-input:           clamp(13px, 1.9vmin, 3.8vmin);
+    --fs-hint:            clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-step:            clamp(15px, 2.2vmin, 4.4vmin);
+    --fs-step-dec:        clamp(11px, 1.5vmin, 3vmin);
+    --fs-btn:             clamp(14px, 1.9vmin, 3.8vmin);
+    --fs-summary:         clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-status:          clamp(12px, 1.5vmin, 3vmin);
+    --fs-checkbox:        clamp(12px, 1.6vmin, 3.2vmin);
+    --fs-checkbox-small:  clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-code:            clamp(11px, 1.5vmin, 2.9vmin);
+
+    --gap-xs: clamp(2px, 0.4vmin, 0.8vmin);
+    --gap-sm: clamp(3px, 0.6vmin, 1.2vmin);
+    --gap-md: clamp(6px, 1.2vmin, 2.4vmin);
+    --gap-lg: clamp(8px, 1.4vmin, 2.8vmin);
+    --gap-xl: clamp(12px, 2vmin, 4vmin);
+
+    --body-pad:      clamp(6px, 1.2vmin, 2.4vmin);
+    --app-pad-v:     clamp(12px, 2vmin, 4vmin);
+    --app-pad-h:     clamp(16px, 2.5vmin, 5vmin);
+    --input-pad-v:   clamp(7px, 1.1vmin, 2.2vmin);
+    --input-pad-h:   clamp(8px, 1.2vmin, 2.4vmin);
+    --summary-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
+    --summary-pad-h: clamp(10px, 1.5vmin, 3vmin);
+    --checkbox-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
+    --checkbox-pad-h: clamp(10px, 1.5vmin, 3vmin);
+
+    --radius-sm: clamp(3px, 0.4vmin, 0.8vmin);
+    --radius-md: clamp(8px, 1.2vmin, 2.4vmin);
+    --radius-lg: clamp(10px, 1.5vmin, 3vmin);
+    --radius-xl: clamp(14px, 1.8vmin, 3.6vmin);
+
+    --step-btn-w:    clamp(46px, 6vmin, 12vmin);
+    --step-btn-h:    clamp(42px, 5.5vmin, 11vmin);
+    --checkbox-size: clamp(18px, 2.4vmin, 4.8vmin);
+    --action-min-w:  clamp(110px, 14vmin, 28vmin);
+    --corner-size:   clamp(64px, 10vmin, 20vmin);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { height: 100%; }
+
+  body {
+    margin: 0;
+    padding: var(--body-pad);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  .app {
+    min-height: calc(100vh - 2 * var(--body-pad));
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--app-pad-v) var(--app-pad-h);
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+  }
+
+  /* ---------- Header（左文右按鈕） ---------- */
+  .app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    min-width: 0;
+  }
+
+  .app-header-text {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    letter-spacing: -.02em;
+  }
+
+  .sub {
+    margin: 0;
+    font-size: var(--fs-sub);
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  /* 右上角 JSON 按鈕 */
+  .header-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(3px, 0.5vmin, 8px);
+    padding: var(--input-pad-v) clamp(10px, 1.8vmin, 2.4vmin);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--accent);
+    background: var(--stepper-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    transition: background-color .12s, color .12s, border-color .12s, box-shadow .12s;
+  }
+
+  .header-btn:focus {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+
+  .header-btn:active { background: var(--accent-dark); color: #fff; }
+
+  /* ---------- Settings Grid ---------- */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--gap-lg) var(--gap-xl);
+    align-items: start;
+    align-content: start;
+    min-width: 0;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .address-field,
+  .loop-field,
+  .remember-field { grid-column: 1 / -1; }
+
+  label {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    color: #334155;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-size: var(--fs-input);
+    font-family: inherit;
+    color: var(--text);
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    outline: none;
+    min-width: 0;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+
+  input::placeholder { color: #94a3b8; }
+
+  input:focus,
+  select:focus {
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+
+  input:disabled,
+  select:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+
+  input.invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .12);
+  }
+
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: clamp(30px, 5vmin, 10vmin);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right clamp(8px, 1.8vmin, 3.6vmin) center;
+    background-size: clamp(12px, 1.8vmin, 3.6vmin) auto;
+    cursor: pointer;
+  }
+
+  .hint {
+    font-size: var(--fs-hint);
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  code {
+    padding: 1px 4px;
+    font-size: .92em;
+    background: #eef2ff;
+    border-radius: var(--radius-sm);
+    color: #3730a3;
+  }
+
+  .stepper {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    min-width: 0;
+  }
+
+  .stepper input {
+    flex: 1 1 0;
+    min-width: 60px;
+    text-align: center;
+    font-size: var(--fs-step);
+    font-weight: 700;
+  }
+
+  .stepper input::-webkit-outer-spin-button,
+  .stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .stepper input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: var(--gap-md);
+    flex: 0 0 auto;
+  }
+
+  .step-btn {
+    flex: 0 0 auto;
+    min-height: var(--step-btn-h);
+    width: var(--step-btn-w);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-step);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    background: var(--stepper-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    white-space: nowrap;
+    transition: background-color .12s, color .12s, box-shadow .12s,
+                border-color .12s, transform .06s;
+  }
+
+  .step-btn.dec { font-size: var(--fs-step-dec); }
+
+  .step-btn:focus {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+
+  .step-btn:active {
+    transform: scale(.96);
+    background: var(--accent-dark);
+    color: #fff;
+  }
+
+  .step-btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-group + .btn-group {
+    padding-left: var(--gap-md);
+    border-left: 2px solid var(--border);
+  }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-lg);
+    padding: var(--checkbox-pad-v) var(--checkbox-pad-h);
+    font-size: var(--fs-checkbox);
+    font-weight: 600;
+    color: #334155;
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    min-width: 0;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+
+  .checkbox-field:focus-within {
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+
+  .checkbox-field input[type="checkbox"] {
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    margin: 0;
+    flex: none;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .checkbox-field .toggle-text {
+    line-height: 1.35;
+    min-width: 0;
+  }
+  .checkbox-field .toggle-text small {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--fs-checkbox-small);
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .summary {
+    padding: var(--summary-pad-v) var(--summary-pad-h);
+    font-size: var(--fs-summary);
+    line-height: 1.5;
+    color: #3730a3;
+    background: #eef2ff;
+    border-radius: var(--radius-md);
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .summary.error {
+    color: var(--danger);
+    background: #fef2f2;
+  }
+
+  .actions {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    margin-top: auto;
+    min-width: 0;
+  }
+
+  button.action {
+    flex: 0 1 var(--action-min-w);
+    min-width: 90px;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    background: var(--accent);
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s, box-shadow .15s;
+  }
+
+  button.action.secondary {
+    color: #334155;
+    background: #fff;
+    border-color: var(--border);
+  }
+
+  button.action.primary:focus {
+    background: var(--accent-dark);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+  button.action.secondary:focus {
+    background: #f1f5f9;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .25);
+  }
+
+  button.action:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .status {
+    flex: 1 1 clamp(180px, 20vmin, 40vmin);
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--summary-pad-v) var(--summary-pad-h);
+    font-size: var(--fs-status);
+    font-weight: 600;
+    text-align: center;
+    color: var(--muted);
+    background: #f8fafc;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .status.active {
+    color: #065f46;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    border-style: solid;
+  }
+  .status.loading {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+    border-style: solid;
+  }
+  .status.done {
+    color: #3730a3;
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    border-style: solid;
+  }
+
+  /* ---------- iframe ---------- */
+  iframe#viewerFrame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+    z-index: 9998;
+    background: #fff;
+  }
+
+  /* ---------- 四角停止熱區 ---------- */
+  .corner-stop {
+    position: fixed;
+    width: var(--corner-size);
+    height: var(--corner-size);
+    display: none;
+    z-index: 9999;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .12s, box-shadow .12s;
+  }
+
+  body.viewing .corner-stop { display: block; }
+
+  .corner-stop:focus {
+    background: rgba(220, 38, 38, .22);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop:active { background: rgba(220, 38, 38, .55); }
+
+  .corner-stop.tl { top: 0;    left: 0;  }
+  .corner-stop.tr { top: 0;    right: 0; }
+  .corner-stop.bl { bottom: 0; left: 0;  }
+  .corner-stop.br { bottom: 0; right: 0; }
+
+  /* ============================================================
+     JSON Modal
+     ============================================================ */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--gap-lg);
+  }
+
+  .modal[hidden] { display: none; }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-panel {
+    position: relative;
+    width: min(720px, 100%);
+    max-height: calc(100vh - 2 * var(--gap-lg));
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--app-pad-v) var(--app-pad-h);
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    letter-spacing: -.02em;
+  }
+
+  .modal-close {
+    flex: 0 0 auto;
+    width: var(--step-btn-w);
+    height: var(--step-btn-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-step);
+    font-weight: 700;
+    color: #334155;
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .12s, color .12s, border-color .12s, box-shadow .12s;
+  }
+
+  .modal-close:focus {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  #jsonText {
+    width: 100%;
+    min-height: clamp(180px, 40vmin, 480px);
+    max-height: 60vh;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--fs-code);
+    line-height: 1.5;
+    color: var(--text);
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    outline: none;
+    resize: vertical;
+    tab-size: 2;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+
+  #jsonText:focus {
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+
+  .modal-msg {
+    font-size: var(--fs-hint);
+    line-height: 1.4;
+    padding: var(--gap-sm) var(--gap-md);
+    border-radius: var(--radius-sm);
+    word-break: break-word;
+  }
+
+  .modal-msg[hidden] { display: none; }
+  .modal-msg.error   { color: var(--danger); background: #fef2f2; }
+  .modal-msg.success { color: #065f46;      background: #ecfdf5; }
+
+  .modal-actions {
+    display: flex;
+    gap: var(--gap-md);
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .modal-actions button {
+    flex: 0 1 auto;
+    min-width: 100px;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    font-family: inherit;
+    border-radius: var(--radius-md);
+    border: 2px solid transparent;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s, box-shadow .15s, border-color .15s;
+  }
+
+  .modal-actions .btn-primary {
+    color: #fff; background: var(--accent);
+  }
+  .modal-actions .btn-primary:focus {
+    background: var(--accent-dark);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+
+  .modal-actions .btn-secondary {
+    color: #334155; background: #fff; border-color: var(--border);
+  }
+  .modal-actions .btn-secondary:focus {
+    background: #f1f5f9;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .25);
+  }
+
+  /* ---------- 響應式 ---------- */
+  @media (max-width: 1000px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .address-field,
+    .loop-field,
+    .remember-field { grid-column: auto; }
+  }
+
+  @media (max-width: 560px) {
+    .stepper input { flex: 1 1 100%; min-width: 0; }
+    .btn-group { flex: 1 1 auto; }
+    .btn-group + .btn-group {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .step-btn { flex: 1; width: auto; }
+
+    .app-header { flex-wrap: wrap; }
+    .header-btn { width: 100%; }
+
+    .modal-actions button { flex: 1 1 100%; }
+  }
+
+  @media (max-height: 720px) {
+    .hint { display: none; }
+  }
+  @media (max-height: 580px) {
+    .sub { display: none; }
+    .checkbox-field .toggle-text small { display: none; }
+    .app { gap: var(--gap-sm); }
+    .settings-grid { gap: var(--gap-md) var(--gap-lg); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="app">
+    <header class="app-header">
+      <div class="app-header-text">
+        <h1>Page Rotation Setup</h1>
+        <p class="sub">
+          輸入基礎網址、選擇翻頁方式、頁數及每頁時間。按 Start 後以全螢幕 iframe 顯示，
+          每頁載入完成後才開始倒數。播放期間可按畫面任何一個角落停止（或按 Esc）。
+        </p>
+      </div>
+      <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">
+        { } JSON
+      </button>
+    </header>
+
+    <form id="settingsForm" novalidate class="settings-grid">
+
+      <div class="field address-field">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address"
+               placeholder="https://example.com/page"
+               autocomplete="off" spellcheck="false" required />
+        <small class="hint">輸入基礎網址（毋須包含 <code>{page}</code>）。</small>
+      </div>
+
+      <div class="field pagecount-field">
+        <label for="pageCount">Page count</label>
+        <div class="stepper">
+          <input type="number" id="pageCount" name="pageCount"
+                 min="1" step="1" value="1" inputmode="numeric" required />
+          <div class="btn-group">
+            <button type="button" class="step-btn" data-step="-1" data-target="pageCount" aria-label="減少頁數">−</button>
+            <button type="button" class="step-btn" data-step="1"  data-target="pageCount" aria-label="增加頁數">+</button>
+          </div>
+        </div>
+        <small class="hint">總頁數（最少 1）</small>
+      </div>
+
+      <div class="field pagemode-field">
+        <label for="pageMode">Next page method</label>
+        <select id="pageMode" name="pageMode">
+          <option value="{url}#{page}" selected>{url}#{page} — Hash（預設）</option>
+          <option value="{url}?page={page}">{url}?page={page} — Query page</option>
+          <option value="{url}?p={page}">{url}?p={page} — Query p</option>
+          <option value="{url}?pageNum={page}">{url}?pageNum={page} — Query pageNum</option>
+          <option value="{url}/{page}">{url}/{page} — Path</option>
+          <option value="{url}/page/{page}">{url}/page/{page} — Path /page/</option>
+          <option value="template">{page} in address — 自訂模板</option>
+        </select>
+        <small class="hint">自訂模板會直接替換 Address 內嘅 <code>{page}</code>。</small>
+      </div>
+
+      <div class="field time-field">
+        <label for="pageTime">Time to show each page (sec)</label>
+        <div class="stepper">
+          <input type="number" id="pageTime" name="pageTime"
+                 min="0.1" step="0.1" value="10" inputmode="decimal" required />
+          <div class="btn-group">
+            <button type="button" class="step-btn" data-step="-1" data-target="pageTime" aria-label="減少 1 秒">−1</button>
+            <button type="button" class="step-btn" data-step="1"  data-target="pageTime" aria-label="增加 1 秒">+1</button>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="step-btn dec" data-step="-0.1" data-target="pageTime" aria-label="減少 0.1 秒">−0.1</button>
+            <button type="button" class="step-btn dec" data-step="0.1"  data-target="pageTime" aria-label="增加 0.1 秒">+0.1</button>
+          </div>
+        </div>
+        <small class="hint">整數用 <code>−1</code> / <code>+1</code>；小數用 <code>−0.1</code> / <code>+0.1</code>。</small>
+      </div>
+
+      <div class="field loop-field">
+        <label class="checkbox-field" for="loopToggle">
+          <input type="checkbox" id="loopToggle" checked />
+          <span class="toggle-text">
+            Loop pages（循環播放）
+            <small>取消勾選：最後一頁完成後停止</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="field remember-field">
+        <label class="checkbox-field" for="rememberToggle">
+          <input type="checkbox" id="rememberToggle" />
+          <span class="toggle-text">
+            Remember my settings（記住設定）
+            <small>勾選後自動儲存於此裝置，下次開啟自動載入</small>
+          </span>
+        </label>
+      </div>
+
+    </form>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="actions">
+      <button type="button" class="action primary" id="startBtn">Start</button>
+      <button type="button" class="action secondary" id="stopBtn" disabled>Stop</button>
+      <div class="status" id="status">Ready</div>
+    </div>
+  </div>
+
+  <!-- JSON Modal -->
+  <div class="modal" id="jsonModal" hidden role="dialog" aria-modal="true" aria-labelledby="jsonModalTitle">
+    <div class="modal-backdrop" data-close-json></div>
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="jsonModalTitle">Settings JSON</h2>
+        <button type="button" class="modal-close" id="closeJsonBtn" aria-label="關閉">×</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="jsonText" spellcheck="false" autocomplete="off"
+                  aria-label="Settings JSON"></textarea>
+        <div class="modal-msg" id="jsonMsg" hidden></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="copyJsonBtn">Copy to clipboard</button>
+        <button type="button" class="btn-primary"   id="applyJsonBtn">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 四角停止熱區 -->
+  <button type="button" class="corner-stop tl" data-stop aria-label="停止"></button>
+  <button type="button" class="corner-stop tr" data-stop aria-label="停止"></button>
+  <button type="button" class="corner-stop bl" data-stop aria-label="停止"></button>
+  <button type="button" class="corner-stop br" data-stop aria-label="停止"></button>
+
+<script>
+(function () {
+  const LOG_PREFIX = '[rotation]';
+  const log   = (...a) => console.log(LOG_PREFIX, ...a);
+  const warn  = (...a) => console.warn(LOG_PREFIX, ...a);
+
+  const STORAGE_KEY     = 'pageRotationSettings.v1';
+  const STORAGE_VERSION = 1;
+
+  const addressEl   = document.getElementById('address');
+  const pageModeEl  = document.getElementById('pageMode');
+  const pageCountEl = document.getElementById('pageCount');
+  const pageTimeEl  = document.getElementById('pageTime');
+  const loopEl      = document.getElementById('loopToggle');
+  const rememberEl  = document.getElementById('rememberToggle');
+  const startBtn    = document.getElementById('startBtn');
+  const stopBtn     = document.getElementById('stopBtn');
+  const summaryEl   = document.getElementById('summary');
+  const statusEl    = document.getElementById('status');
+  const cornerStops = Array.from(document.querySelectorAll('[data-stop]'));
+  const stepBtns    = Array.from(document.querySelectorAll('.step-btn'));
+
+  const openJsonBtn  = document.getElementById('openJsonBtn');
+  const closeJsonBtn = document.getElementById('closeJsonBtn');
+  const jsonModal    = document.getElementById('jsonModal');
+  const jsonText     = document.getElementById('jsonText');
+  const jsonMsg      = document.getElementById('jsonMsg');
+  const copyJsonBtn  = document.getElementById('copyJsonBtn');
+  const applyJsonBtn = document.getElementById('applyJsonBtn');
+
+  const LOAD_TIMEOUT_MS = 15000;
+  const TICK_MS = 100;
+
+  let tickId = null;
+  let loadTimer = null;
+  let pendingLoad = false;
+  let lastLoadedUrl = null;
+  let state = null;
+  let iframeEl = null;
+  let lastFocusedBeforeModal = null;
+
+  /* ============================================================
+     localStorage
+     ============================================================ */
+
+  function readStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      log('localStorage 讀取', data);
+      return data;
+    } catch (e) {
+      warn('localStorage 讀取失敗', e);
+      return null;
+    }
+  }
+
+  function writeStorage(data) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      log('localStorage 已儲存', data);
+    } catch (e) {
+      warn('localStorage 寫入失敗', e);
+    }
+  }
+
+  function clearStorage() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      log('localStorage 已清除');
+    } catch (e) {
+      warn('localStorage 清除失敗', e);
+    }
+  }
+
+  /* ============================================================
+     收集 / 套用設定（含 version 字段）
+     ============================================================ */
+
+  function collectSettings() {
+    return {
+      version:    STORAGE_VERSION,
+      address:    addressEl.value.trim(),
+      mode:       pageModeEl.value,
+      pageCount:  pageCountEl.value,
+      pageTime:   pageTimeEl.value,
+      loop:       loopEl.checked,
+      remember:   rememberEl.checked
+    };
+  }
+
+  function maybePersist() {
+    if (!rememberEl.checked) return;
+    writeStorage(collectSettings());
+  }
+
+  function isKnownMode(mode) {
+    if (typeof mode !== 'string') return false;
+    return Array.from(pageModeEl.options).some(o => o.value === mode);
+  }
+
+  function applyStoredSettings(data) {
+    if (!data || typeof data !== 'object') return false;
+
+    if (data.version != null && data.version !== STORAGE_VERSION) {
+      warn('JSON 版本不符', { got: data.version, expected: STORAGE_VERSION });
+      // 仍嘗試套用兼容字段
+    }
+
+    if (typeof data.address === 'string') addressEl.value = data.address;
+    if (isKnownMode(data.mode))           pageModeEl.value = data.mode;
+    if (data.pageCount != null)           pageCountEl.value = data.pageCount;
+    if (data.pageTime  != null)           pageTimeEl.value  = data.pageTime;
+    if (typeof data.loop === 'boolean')   loopEl.checked = data.loop;
+    if (typeof data.remember === 'boolean') rememberEl.checked = data.remember;
+
+    log('已套用設定', collectSettings());
+    return true;
+  }
+
+  /* ============================================================
+     工具
+     ============================================================ */
+
+  function fmtSeconds(v) {
+    return Number.isInteger(v) ? String(v) : v.toFixed(1);
+  }
+
+  function fmtRemaining(ms) {
+    const step = TICK_MS / 1000;
+    const v = Math.max(0, Math.ceil(ms / TICK_MS) * step);
+    return fmtSeconds(v);
+  }
+
+  function stripHash(u) {
+    const i = u.indexOf('#');
+    return i < 0 ? u : u.slice(0, i);
+  }
+
+  function applyStep(btn) {
+    const target = document.getElementById(btn.dataset.target);
+    if (!target || target.disabled) return;
+
+    const stepStr = btn.dataset.step;
+    const step = parseFloat(stepStr);
+    const min = parseFloat(target.min);
+    let val = parseFloat(target.value);
+
+    if (!Number.isFinite(val)) val = Number.isFinite(min) ? min : 0;
+    if (!Number.isFinite(min)) val = Math.max(val, 0);
+
+    val += step;
+    const decimals = (stepStr.split('.')[1] || '').length;
+    val = Number(val.toFixed(decimals));
+    if (val < min) val = min;
+
+    target.value = val;
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+
+    log('step', { target: target.id, value: target.value, by: stepStr });
+  }
+
+  function readSettings() {
+    const address        = addressEl.value.trim();
+    const mode           = pageModeEl.value;
+    const totalPages     = Number(pageCountEl.value);
+    const secondsPerPage = Number(pageTimeEl.value);
+    const loop           = loopEl.checked;
+
+    const errors = {};
+    if (!address) errors.address = true;
+    if (!Number.isInteger(totalPages) || totalPages < 1) errors.pageCount = true;
+    if (!Number.isFinite(secondsPerPage) || secondsPerPage < 0.1) errors.pageTime = true;
+
+    return {
+      address, mode, totalPages, secondsPerPage, loop,
+      valid: Object.keys(errors).length === 0,
+      errors
+    };
+  }
+
+  function refresh() {
+    const s = readSettings();
+    const running = state !== null;
+
+    addressEl.classList.toggle('invalid', !running && s.errors.address);
+    pageCountEl.classList.toggle('invalid', !running && s.errors.pageCount);
+    pageTimeEl.classList.toggle('invalid', !running && s.errors.pageTime);
+
+    startBtn.disabled = running || !s.valid;
+
+    if (!s.valid) {
+      summaryEl.classList.add('error');
+      summaryEl.textContent = '請填寫所有欄位；頁數需為整數且 ≥ 1，每頁時間需 ≥ 0.1 秒。';
+      return;
+    }
+
+    summaryEl.classList.remove('error');
+    const total = s.totalPages * s.secondsPerPage;
+    summaryEl.textContent = s.loop
+      ? s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
+        ' 秒 = 每輪 ' + fmtSeconds(total) + ' 秒，循環播放'
+      : s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
+        ' 秒 = 合共 ' + fmtSeconds(total) + ' 秒，完成後停止';
+  }
+
+  function buildPageUrl(base, page, mode) {
+    if (mode === 'template') return base.replaceAll('{page}', String(page));
+    return mode.replaceAll('{url}', base).replaceAll('{page}', String(page));
+  }
+
+  function setStatus(mode, text) {
+    statusEl.classList.remove('active', 'loading', 'done');
+    if (mode) statusEl.classList.add(mode);
+    statusEl.textContent = text;
+  }
+
+  function showCounting() {
+    if (!state) return;
+    const remaining = fmtRemaining(state.deadline - Date.now());
+    setStatus('active',
+      '第 ' + state.page + ' / ' + state.totalPages +
+      ' 頁 — 下一頁倒數 ' + remaining + ' 秒' +
+      (state.loop ? '（循環）' : ''));
+  }
+
+  function showLoading() {
+    if (!state) return;
+    setStatus('loading',
+      '載入第 ' + state.page + ' / ' + state.totalPages + ' 頁…');
+  }
+
+  function createIframe() {
+    removeIframe();
+    iframeEl = document.createElement('iframe');
+    iframeEl.id = 'viewerFrame';
+    iframeEl.title = 'Page viewer';
+    iframeEl.addEventListener('load', onFrameLoaded);
+    document.body.appendChild(iframeEl);
+    document.body.classList.add('viewing');
+  }
+
+  function removeIframe() {
+    if (iframeEl) {
+      iframeEl.removeEventListener('load', onFrameLoaded);
+      iframeEl.remove();
+      iframeEl = null;
+    }
+    document.body.classList.remove('viewing');
+  }
+
+  function clearLoadTimer() {
+    if (loadTimer) { clearTimeout(loadTimer); loadTimer = null; }
+  }
+
+  function clearTick() {
+    if (tickId) { clearInterval(tickId); tickId = null; }
+  }
+
+  function loadPage(pageNumber) {
+    if (!state || !iframeEl) return;
+
+    state.page = pageNumber;
+    clearTick();
+    clearLoadTimer();
+    pendingLoad = false;
+
+    const url = buildPageUrl(state.address, state.page, state.mode);
+    log('loadPage', { page: state.page, url });
+
+    const sameUrl  = (url === lastLoadedUrl);
+    const hashOnly = lastLoadedUrl && (stripHash(url) === stripHash(lastLoadedUrl));
+
+    if (sameUrl) {
+      log('→ URL 相同，毋須 reload，直接倒數');
+      beginCountdown();
+      return;
+    }
+
+    if (hashOnly) {
+      log('→ 只有 hash 改變，略過等待 load');
+      lastLoadedUrl = url;
+      iframeEl.src = url;
+      beginCountdown();
+      return;
+    }
+
+    showLoading();
+    pendingLoad = true;
+    lastLoadedUrl = url;
+
+    loadTimer = setTimeout(() => {
+      if (pendingLoad) {
+        pendingLoad = false;
+        warn('→ 等 load 逾時（' + LOAD_TIMEOUT_MS + 'ms），強制開始倒數');
+        beginCountdown();
+      }
+    }, LOAD_TIMEOUT_MS);
+
+    iframeEl.src = url;
+  }
+
+  function onFrameLoaded() {
+    log('iframe load event', { pendingLoad, page: state && state.page });
+    if (!state || !pendingLoad) return;
+    pendingLoad = false;
+    clearLoadTimer();
+    beginCountdown();
+  }
+
+  function beginCountdown() {
+    if (!state) return;
+    clearTick();
+    state.deadline = Date.now() + state.secondsPerPage * 1000;
+    log('beginCountdown', {
+      page: state.page,
+      seconds: state.secondsPerPage,
+      deadline: state.deadline
+    });
+    showCounting();
+    tickId = setInterval(tick, TICK_MS);
+  }
+
+  function tick() {
+    if (!state) return;
+
+    if (state.deadline - Date.now() > 0) {
+      showCounting();
+      return;
+    }
+
+    log('countdown 完結', { page: state.page, loop: state.loop });
+    clearTick();
+
+    if (state.page >= state.totalPages) {
+      if (state.loop) {
+        log('循環 → 回到第 1 頁');
+        loadPage(1);
+      } else {
+        log('全部頁面完成');
+        finish();
+      }
+      return;
+    }
+
+    loadPage(state.page + 1);
+  }
+
+  function start() {
+    const s = readSettings();
+    if (!s.valid || state) return;
+
+    closeJsonModal();
+    log('START', s);
+
+    state = {
+      address: s.address,
+      mode: s.mode,
+      totalPages: s.totalPages,
+      secondsPerPage: s.secondsPerPage,
+      loop: s.loop,
+      page: 1,
+      deadline: 0
+    };
+
+    lastLoadedUrl = null;
+
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+      .forEach(el => (el.disabled = true));
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+
+    createIframe();
+    loadPage(1);
+  }
+
+  function resetControls() {
+    clearTick();
+    clearLoadTimer();
+    pendingLoad = false;
+    lastLoadedUrl = null;
+    state = null;
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+      .forEach(el => (el.disabled = false));
+    stopBtn.disabled = true;
+    removeIframe();
+    refresh();
+  }
+
+  function stop() {
+    if (!state) return;
+    log('STOP');
+    resetControls();
+    setStatus(null, '已停止');
+  }
+
+  function finish() {
+    log('FINISH');
+    resetControls();
+    setStatus('done', '完成 — 所有頁面已顯示');
+  }
+
+  /* ============================================================
+     JSON Modal
+     ============================================================ */
+
+  function showJsonMsg(kind, text) {
+    jsonMsg.hidden = false;
+    jsonMsg.className = 'modal-msg ' + kind;
+    jsonMsg.textContent = text;
+  }
+
+  function hideJsonMsg() {
+    jsonMsg.hidden = true;
+    jsonMsg.textContent = '';
+  }
+
+  function openJsonModal() {
+    lastFocusedBeforeModal = document.activeElement;
+
+    const data = collectSettings();
+    jsonText.value = JSON.stringify(data, null, 2);
+    hideJsonMsg();
+
+    jsonModal.hidden = false;
+    // 等 hidden 移除後再聚焦
+    requestAnimationFrame(() => {
+      jsonText.focus();
+      try { jsonText.setSelectionRange(0, 0); } catch (e) { /* ignore */ }
+      jsonText.scrollTop = 0;
+    });
+    log('打開 JSON modal');
+  }
+
+  function closeJsonModal() {
+    if (jsonModal.hidden) return;
+    jsonModal.hidden = true;
+    hideJsonMsg();
+    log('關閉 JSON modal');
+    if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) {
+      try { lastFocusedBeforeModal.focus(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  async function copyJson() {
+    const text = jsonText.value;
+    let ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    } catch (e) {
+      warn('clipboard API 失敗', e);
+    }
+
+    if (!ok) {
+      try {
+        jsonText.focus();
+        jsonText.select();
+        ok = document.execCommand('copy');
+      } catch (e) {
+        warn('execCommand copy 失敗', e);
+      }
+    }
+
+    if (ok) {
+      showJsonMsg('success', '已複製到剪貼簿');
+    } else {
+      showJsonMsg('error', '複製失敗，請手動選取文字 (Ctrl/⌘ + C)');
+    }
+  }
+
+  function applyJson() {
+    const raw = jsonText.value.trim();
+    if (!raw) {
+      showJsonMsg('error', 'Textarea 係空嘅');
+      return;
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      showJsonMsg('error', 'JSON 格式錯誤：' + e.message);
+      return;
+    }
+
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      showJsonMsg('error', 'JSON 頂層必須係物件 { … }');
+      return;
+    }
+
+    applyStoredSettings(parsed);
+
+    // 版本提示
+    if (parsed.version != null && parsed.version !== STORAGE_VERSION) {
+      showJsonMsg('success',
+        '已套用（注意：JSON 版本 v' + parsed.version +
+        '，目前版本 v' + STORAGE_VERSION + '）');
+    } else {
+      showJsonMsg('success', '已套用設定');
+    }
+
+    refresh();
+
+    // 依 JSON 裡 remember 狀態同步 localStorage
+    if (rememberEl.checked) {
+      writeStorage(collectSettings());
+    } else {
+      clearStorage();
+    }
+
+    setStatus(null, '已套用 JSON 設定');
+  }
+
+  /* ============================================================
+     事件綁定
+     ============================================================ */
+
+  [addressEl, pageCountEl, pageTimeEl, pageModeEl, loopEl].forEach(el => {
+    el.addEventListener('input', () => { refresh(); maybePersist(); });
+    el.addEventListener('change', () => { refresh(); maybePersist(); });
+  });
+
+  rememberEl.addEventListener('change', () => {
+    if (rememberEl.checked) {
+      writeStorage(collectSettings());
+      setStatus(null, '已記住設定');
+    } else {
+      clearStorage();
+      setStatus(null, '已取消記住設定');
+    }
+  });
+
+  stepBtns.forEach(btn => btn.addEventListener('click', () => {
+    applyStep(btn);
+    maybePersist();
+  }));
+
+  startBtn.addEventListener('click', start);
+  stopBtn.addEventListener('click', stop);
+  cornerStops.forEach(btn => btn.addEventListener('click', stop));
+
+  // JSON modal
+  openJsonBtn.addEventListener('click', openJsonModal);
+  closeJsonBtn.addEventListener('click', closeJsonModal);
+  copyJsonBtn.addEventListener('click', copyJson);
+  applyJsonBtn.addEventListener('click', applyJson);
+  jsonModal.addEventListener('click', e => {
+    if (e.target.matches('[data-close-json]')) closeJsonModal();
+  });
+
+  // 鍵盤
+  document.addEventListener('keydown', e => {
+    if (!jsonModal.hidden) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeJsonModal();
+      }
+      return;
+    }
+
+    if (!state) return;
+    if (e.key === 'Escape' || e.key === 'Esc' || e.key === 'MediaStop') {
+      e.preventDefault();
+      stop();
+    }
+  });
+
+  document.getElementById('settingsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    start();
+  });
+
+  /* ============================================================
+     初始化
+     ============================================================ */
+
+  const stored = readStorage();
+  if (stored && stored.remember) {
+    applyStoredSettings(stored);
+    log('已還原記住嘅設定');
+  } else if (stored) {
+    clearStorage();
+  }
+
+  log('頁面載入完成，等待操作');
+  refresh();
+})();
+</script>
+</body>
+</html>
