@@ -463,7 +463,7 @@
   .corner-stop.br { bottom: 0; right: 0; }
 
   /* ============================================================
-     Modal 共通
+     Modal 共通（無 backdrop-filter，小 box-shadow）
      ============================================================ */
   .modal {
     position: fixed;
@@ -479,8 +479,7 @@
   .modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, .65);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, .72);
   }
 
   .modal-panel {
@@ -493,7 +492,7 @@
     padding: var(--app-pad-v) var(--app-pad-h);
     background: #fff;
     border-radius: var(--radius-lg);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .45);
     overflow: hidden;
   }
 
@@ -612,7 +611,7 @@
   }
 
   /* ============================================================
-     Log Modal（含自訂滾動條 + 按鈕）
+     Log Modal（含自訂滾動條，click 跳轉，無 drag / hover）
      ============================================================ */
   .log-count {
     font-size: var(--fs-sub);
@@ -637,7 +636,6 @@
   }
   .log-session[hidden] { display: none; }
 
-  /* 日誌列表 + 自訂滾動條（並排） */
   .log-body {
     flex: 1 1 auto;
     min-height: clamp(160px, 36vmin, 420px);
@@ -659,31 +657,25 @@
     color: #e2e8f0;
     background: #0f172a;
     border: 2px solid var(--border);
-    border-radius: var(--radius-md);
-    /* 隱藏原生滾動條（TV 上細到睇唔到，而且會搶 focus） */
     scrollbar-width: none;
     -ms-overflow-style: none;
-    overscroll-behavior: contain;
   }
   .log-list::-webkit-scrollbar { width: 0; height: 0; }
 
   .log-track {
-    flex: 0 0 10px;
+    flex: 0 0 16px;
     position: relative;
-    background: rgba(15, 23, 42, .10);
-    border-radius: 5px;
-    overflow: hidden;
+    background: #e2e8f0;
+    cursor: pointer;
   }
   .log-thumb {
     position: absolute;
-    left: 1px; right: 1px; top: 0;
+    left: 0; right: 0; top: 0;
     background: #6366f1;
-    border-radius: 4px;
     min-height: 24px;
-    will-change: transform;
+    pointer-events: none;         /* thumb 純視覺，所有 click 落到 track */
   }
 
-  /* ▲ / ▼ 按鈕 */
   .log-scroll-controls {
     display: flex;
     gap: var(--gap-md);
@@ -703,7 +695,6 @@
     outline: none;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
-    transition: background-color .12s, color .12s, border-color .12s, box-shadow .12s;
   }
   .log-scroll-btn:focus {
     color: #fff;
@@ -716,19 +707,16 @@
     color: #fff;
   }
 
+  /* 每條 log 1 個節點 */
   .log-entry {
-    display: flex;
-    gap: 8px;
     padding: 2px 0;
     border-bottom: 1px solid rgba(255, 255, 255, .06);
     word-break: break-word;
+    white-space: pre-wrap;
+    color: #e2e8f0;
   }
-  .log-entry .log-time  { flex: 0 0 auto; color: #94a3b8; font-variant-numeric: tabular-nums; }
-  .log-entry .log-level { flex: 0 0 auto; min-width: 42px; font-weight: 700; }
-  .log-entry .log-msg   { flex: 1 1 auto; min-width: 0; white-space: pre-wrap; }
-  .log-entry.info  .log-level { color: #93c5fd; }
-  .log-entry.warn  .log-level { color: #fbbf24; }
-  .log-entry.crit  .log-level { color: #f87171; }
+  .log-entry.warn { color: #fbbf24; }
+  .log-entry.crit { color: #f87171; }
 
   /* ============================================================
      Crash Report Modal
@@ -1036,7 +1024,7 @@
     </div>
   </div>
 
-  <!-- Log Modal（含自訂滾動條 + ▲/▼ 按鈕） -->
+  <!-- Log Modal -->
   <div class="modal" id="logModal" hidden role="dialog" aria-modal="true" aria-labelledby="logModalTitle">
     <div class="modal-backdrop" data-close-log></div>
     <div class="modal-panel">
@@ -1055,6 +1043,9 @@
         <div class="log-scroll-controls">
           <button type="button" class="log-scroll-btn" id="logScrollUp"   aria-label="向上滾動">▲ 向上</button>
           <button type="button" class="log-scroll-btn" id="logScrollDown" aria-label="向下滾動">▼ 向下</button>
+        </div>
+        <div class="hint" style="text-align:center;margin:0;">
+          ↑/↓ 小步　·　←/→ 大步　·　數字 1-9 跳到 10%-90%　·　0 跳到底　·　點右側滾動條即跳轉　·　Esc 關閉
         </div>
       </div>
       <div class="modal-actions">
@@ -1102,7 +1093,7 @@
   const HEARTBEAT_KEY = 'pageRot.heartbeat.v1';
   const TAB_KEY       = 'pageRot.tab.v1';
 
-  const LOG_MAX        = 250;
+  const LOG_MAX        = 250;   /* 存储 & 渲染共 250 条 */
   const SESSION_MAX    = 30;
   const FLUSH_DEBOUNCE = 300;
   const HB_INTERVAL    = 10000;
@@ -1700,7 +1691,11 @@
   }
 
   /* ============================================================
-     Log Modal（含自訂滾動條 + ▲/▼ 按鈕）
+     Log Modal
+     - 每條 log 1 個 DOM 節點
+     - 無定時器
+     - Track 單擊跳轉（無 drag / hover / long-press）
+     - 數字鍵 1-9 / 0 快速跳轉
      ============================================================ */
   const logBtn          = document.getElementById('logBtn');
   const logModal        = document.getElementById('logModal');
@@ -1716,8 +1711,8 @@
   const logScrollUp     = document.getElementById('logScrollUp');
   const logScrollDown   = document.getElementById('logScrollDown');
 
-  let logModalTimer = null;
   let renderedCount = 0;
+  let thumbRafId    = null;
 
   function fmtTime(ts) {
     const d = new Date(ts); const p = n => String(n).padStart(2, '0');
@@ -1738,12 +1733,10 @@
   function buildLogRow(e) {
     const row = document.createElement('div');
     row.className = 'log-entry ' + e.level;
-    const t = document.createElement('span'); t.className = 'log-time';  t.textContent = fmtTime(e.t);
-    const l = document.createElement('span'); l.className = 'log-level'; l.textContent = fmtLevel(e.level);
-    const m = document.createElement('span'); m.className = 'log-msg';   m.textContent = e.msg;
-    row.append(t, l, m);
+    row.textContent = fmtTime(e.t) + ' ' + fmtLevel(e.level) + ' ' + e.msg;
     return row;
   }
+
   function renderSessionInfo() {
     const lines = [];
     let isCrash = false;
@@ -1775,8 +1768,9 @@
     logSessionEl.textContent = lines.join('\n');
   }
 
-  /* 更新自訂滾動條 thumb */
-  function updateLogThumb() {
+  /* rAF 節流更新 thumb */
+  function updateLogThumbNow() {
+    thumbRafId = null;
     if (!logList || !logTrack || !logThumb) return;
     const sh = logList.scrollHeight;
     const ch = logList.clientHeight;
@@ -1792,25 +1786,20 @@
     const ratio = maxScroll > 0 ? logList.scrollTop / maxScroll : 0;
     const top = Math.min(maxTop, Math.max(0, ratio * maxTop));
     logThumb.style.height = thumbH + 'px';
-    logThumb.style.transform = 'translateY(' + top + 'px)';
+    logThumb.style.top = top + 'px';
   }
-
-  /* ▲ / ▼ 按鈕：每次滾約 0.75 屏 */
-  function scrollLogBy(dir) {
-    if (!logList) return;
-    const amount = Math.round(logList.clientHeight * 0.75) * dir;
-    logList.scrollTop = Math.max(0, Math.min(
-      logList.scrollHeight - logList.clientHeight,
-      logList.scrollTop + amount
-    ));
-    updateLogThumb();
+  function scheduleThumbUpdate() {
+    if (thumbRafId !== null) return;
+    thumbRafId = requestAnimationFrame(updateLogThumbNow);
   }
 
   function renderLogs(scrollBottom) {
     if (!logList) return;
     const wasAtBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 40;
+
     if (logBuffer.length < renderedCount) {
-      logList.innerHTML = ''; renderedCount = 0;
+      logList.innerHTML = '';
+      renderedCount = 0;
     }
     if (logBuffer.length > renderedCount) {
       const frag = document.createDocumentFragment();
@@ -1820,25 +1809,48 @@
       logList.appendChild(frag);
       renderedCount = logBuffer.length;
     }
+
     logCountEl.textContent = '(' + logBuffer.length + ')';
     renderSessionInfo();
+
     if (scrollBottom || wasAtBottom) logList.scrollTop = logList.scrollHeight;
-    updateLogThumb();
+    scheduleThumbUpdate();
+  }
+
+  function scrollLogBy(dir) {
+    if (!logList) return;
+    const atBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 4;
+    if (dir > 0 && atBottom && logBuffer.length !== renderedCount) {
+      renderLogs(true);
+      return;
+    }
+    const amount = Math.round(logList.clientHeight * 0.75) * dir;
+    logList.scrollTop = Math.max(0, Math.min(
+      logList.scrollHeight - logList.clientHeight,
+      logList.scrollTop + amount
+    ));
+    scheduleThumbUpdate();
+  }
+
+  /* 跳到指定比例：0 = 頂，1 = 底 */
+  function jumpLogTo(ratio) {
+    if (!logList) return;
+    ratio = Math.max(0, Math.min(1, ratio));
+    const maxScroll = logList.scrollHeight - logList.clientHeight;
+    if (maxScroll <= 0) return;
+    logList.scrollTop = ratio * maxScroll;
+    scheduleThumbUpdate();
   }
 
   function openLogModal() {
     lastFocusedBeforeModal = document.activeElement;
     logModal.hidden = false;
     renderLogs(true);
-    logModalTimer = setInterval(() => renderLogs(false), 500);
     log('打開 Log modal');
-    /* focus 預設放在「向下」按鈕，方便用戶即刻用遙控器操作 */
-    setTimeout(() => { try { logScrollDown.focus(); } catch (e) {} }, 50);
   }
   function closeLogModal() {
     if (logModal.hidden) return;
     logModal.hidden = true;
-    if (logModalTimer) { clearInterval(logModalTimer); logModalTimer = null; }
     log('關閉 Log modal');
     if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) {
       try { lastFocusedBeforeModal.focus(); } catch (e) {}
@@ -1954,7 +1966,6 @@
     renderCrashModal();
     crashModal.hidden = false;
     log('打開 Crash Report modal');
-    setTimeout(() => { try { crashContinueBtn.focus(); } catch (e) {} }, 50);
   }
   function closeCrashModal() {
     if (crashModal.hidden) return;
@@ -2022,30 +2033,56 @@
     if (e.target.matches('[data-close-log]')) closeLogModal();
   });
 
-  /* 滾動條相關事件 */
-  logList.addEventListener('scroll', updateLogThumb, { passive: true });
+  /* Track 單擊 → 即刻跳到該比例位置 */
+  logTrack.addEventListener('click', e => {
+    const rect = logTrack.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    jumpLogTo(y / rect.height);
+  });
+
+  /* 滾動條相關 */
+  logList.addEventListener('scroll', scheduleThumbUpdate, { passive: true });
   logScrollUp.addEventListener('click', () => scrollLogBy(-1));
   logScrollDown.addEventListener('click', () => scrollLogBy(1));
-  window.addEventListener('resize', updateLogThumb);
+  window.addEventListener('resize', scheduleThumbUpdate);
 
   crashCloseBtn.addEventListener('click', closeCrashModal);
   crashContinueBtn.addEventListener('click', crashContinue);
 
+  /* ---- 鍵盤 / 遙控器（無需 focus，直接監聽全域 keydown） ---- */
   document.addEventListener('keydown', e => {
+    const code = e.keyCode || e.which || 0;
+    const key  = e.key || '';
+
     if (!jsonModal.hidden) {
-      if (e.key === 'Escape') { e.preventDefault(); closeJsonModal(); }
+      if (key === 'Escape' || code === 27) { e.preventDefault(); closeJsonModal(); }
       return;
     }
     if (!logModal.hidden) {
-      if (e.key === 'Escape') { e.preventDefault(); closeLogModal(); }
+      if (key === 'Escape' || code === 27 || code === 8) {
+        e.preventDefault(); closeLogModal(); return;
+      }
+      if (key === 'ArrowUp'    || code === 38) { e.preventDefault(); scrollLogBy(-1); return; }
+      if (key === 'ArrowDown'  || code === 40) { e.preventDefault(); scrollLogBy(1);  return; }
+      if (key === 'ArrowLeft'  || code === 37) { e.preventDefault(); scrollLogBy(-3); return; }
+      if (key === 'ArrowRight' || code === 39) { e.preventDefault(); scrollLogBy(3);  return; }
+      if (key === 'PageUp'     || code === 33) { e.preventDefault(); scrollLogBy(-3); return; }
+      if (key === 'PageDown'   || code === 34) { e.preventDefault(); scrollLogBy(3);  return; }
+      /* 數字鍵：1-9 跳到 10%-90%，0 跳到底 */
+      if (code >= 48 && code <= 57) {
+        e.preventDefault();
+        const num = code - 48;
+        jumpLogTo(num === 0 ? 1 : num / 10);
+        return;
+      }
       return;
     }
     if (!crashModal.hidden) {
-      if (e.key === 'Escape') { e.preventDefault(); closeCrashModal(); }
+      if (key === 'Escape' || code === 27) { e.preventDefault(); closeCrashModal(); }
       return;
     }
     if (!state) return;
-    if (e.key === 'Escape' || e.key === 'Esc' || e.key === 'MediaStop') {
+    if (key === 'Escape' || key === 'Esc' || key === 'MediaStop' || code === 27) {
       e.preventDefault();
       stop();
     }
