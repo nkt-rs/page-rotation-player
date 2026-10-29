@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Rotation Setup</title>
+<style>
+  :root {
+    --accent: #4f46e5;
+    --accent-dark: #4338ca;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --danger: #dc2626;
+    --stepper-bg: #eef2ff;
+
+    --fs-h1:              clamp(18px, 2.6vmin, 5.2vmin);
+    --fs-sub:             clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-label:           clamp(11px, 1.5vmin, 3vmin);
+    --fs-input:           clamp(13px, 1.9vmin, 3.8vmin);
+    --fs-hint:            clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-step:            clamp(15px, 2.2vmin, 4.4vmin);
+    --fs-step-dec:        clamp(11px, 1.5vmin, 3vmin);
+    --fs-btn:             clamp(14px, 1.9vmin, 3.8vmin);
+    --fs-summary:         clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-status:          clamp(12px, 1.5vmin, 3vmin);
+    --fs-checkbox:        clamp(12px, 1.6vmin, 3.2vmin);
+    --fs-checkbox-small:  clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-code:            clamp(11px, 1.5vmin, 2.9vmin);
+    --fs-start:           clamp(16px, 2.2vmin, 4.2vmin);
+
+    --gap-xs: clamp(2px, 0.4vmin, 0.8vmin);
+    --gap-sm: clamp(3px, 0.6vmin, 1.2vmin);
+    --gap-md: clamp(6px, 1.2vmin, 2.4vmin);
+    --gap-lg: clamp(8px, 1.4vmin, 2.8vmin);
+    --gap-xl: clamp(12px, 2vmin, 4vmin);
+
+    --input-pad-v:   clamp(7px, 1.1vmin, 2.2vmin);
+    --input-pad-h:   clamp(8px, 1.2vmin, 2.4vmin);
+    --summary-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
+    --summary-pad-h: clamp(10px, 1.5vmin, 3vmin);
+    --checkbox-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
+    --checkbox-pad-h: clamp(10px, 1.5vmin, 3vmin);
+
+    --radius-sm: clamp(3px, 0.4vmin, 0.8vmin);
+    --radius-md: clamp(8px, 1.2vmin, 2.4vmin);
+    --radius-lg: clamp(10px, 1.5vmin, 3vmin);
+    --radius-xl: clamp(14px, 1.8vmin, 3.6vmin);
+
+    --step-btn-w:    clamp(46px, 6vmin, 12vmin);
+    --step-btn-h:    clamp(42px, 5.5vmin, 11vmin);
+    --checkbox-size: clamp(18px, 2.4vmin, 4.8vmin);
+    --corner-size:   clamp(64px, 10vmin, 20vmin);
+    --header-h:      clamp(64px, 8.5vmin, 120px);
+  }
+
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 Helvetica, Arial, sans-serif;
+    background: #fff;
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  /* ============================================================
+     Header
+     ============================================================ */
+  .app-header {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+    min-height: var(--header-h);
+    border-bottom: 1px solid var(--border);
+    min-width: 0;
+  }
+
+  .app-header-text {
+    flex: 1 1 auto;
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--gap-xs);
+    padding: var(--gap-sm) var(--gap-md);
+    min-width: 0;
+  }
+  h1 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    letter-spacing: -.02em;
+  }
+  .sub {
+    margin: 0;
+    font-size: var(--fs-sub);
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .header-actions {
+    flex: 0 0 auto;
+    order: 3;
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .header-btn,
+  #stopBtn,
+  #startBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    transition: background .12s, color .12s, box-shadow .12s;
+  }
+
+  .header-btn {
+    flex: 0 0 auto;
+    padding: 0 clamp(14px, 2.2vmin, 32px);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--stepper-bg);
+    border-left: 1px solid var(--border);
+  }
+  .header-btn:hover:not(:disabled) { background: #e0e7ff; }
+  .header-btn:focus {
+    color: #fff;
+    background: var(--accent);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .3);
+  }
+
+  #stopBtn {
+    flex: 0 0 auto;
+    min-width: clamp(80px, 10vmin, 140px);
+    padding: 0 clamp(16px, 2.4vmin, 36px);
+    font-size: var(--fs-btn);
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-left: 1px solid #b91c1c;
+  }
+  #stopBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  #stopBtn:focus {
+    background: #b91c1c;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .4);
+  }
+  #stopBtn:active:not(:disabled) {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+  #stopBtn:disabled {
+    opacity: .35;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border-left-color: var(--border);
+    cursor: not-allowed;
+    filter: grayscale(.5);
+  }
+
+  #startBtn {
+    flex: 0 0 auto;
+    order: 1;
+    min-width: clamp(140px, 19vmin, 260px);
+    padding: 0 clamp(20px, 3vmin, 52px);
+    font-size: var(--fs-start);
+    font-weight: 800;
+    letter-spacing: .01em;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-right: 1px solid var(--accent-dark);
+    border-left: 0;
+  }
+  #startBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  }
+  #startBtn:focus {
+    background: var(--accent-dark);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .35);
+  }
+  #startBtn:active:not(:disabled) {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+  #startBtn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+  }
+
+  /* ---------- Settings Grid ---------- */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: var(--gap-lg) var(--gap-xl);
+    align-items: start;
+    align-content: start;
+    padding: var(--gap-lg) var(--gap-md);
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-width: 0;
+    min-height: 0;
+  }
+  .address-field,
+  .loop-field,
+  .remember-field { grid-column: 1 / -1; }
+
+  label {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    color: #334155;
+  }
+  input, select {
+    width: 100%;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-size: var(--fs-input);
+    font-family: inherit;
+    color: var(--text);
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    outline: none;
+    min-width: 0;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  input::placeholder { color: #94a3b8; }
+  input:focus, select:focus {
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+  input:disabled, select:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+  input.invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .12);
+  }
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: clamp(30px, 5vmin, 10vmin);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right clamp(8px, 1.8vmin, 3.6vmin) center;
+    background-size: clamp(12px, 1.8vmin, 3.6vmin) auto;
+    cursor: pointer;
+  }
+  .hint {
+    font-size: var(--fs-hint);
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  code {
+    padding: 1px 4px;
+    font-size: .92em;
+    background: #eef2ff;
+    border-radius: var(--radius-sm);
+    color: #3730a3;
+  }
+  .stepper {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    min-width: 0;
+  }
+  .stepper input {
+    flex: 1 1 0;
+    min-width: 60px;
+    text-align: center;
+    font-size: var(--fs-step);
+    font-weight: 700;
+  }
+  .stepper input::-webkit-outer-spin-button,
+  .stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .stepper input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .btn-group {
+    display: flex;
+    gap: var(--gap-md);
+    flex: 0 0 auto;
+  }
+  .step-btn {
+    flex: 0 0 auto;
+    min-height: var(--step-btn-h);
+    width: var(--step-btn-w);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-step);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    background: var(--stepper-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    white-space: nowrap;
+    transition: background-color .12s, color .12s, box-shadow .12s,
+                border-color .12s, transform .06s;
+  }
+  .step-btn.dec { font-size: var(--fs-step-dec); }
+  .step-btn:focus {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+  }
+  .step-btn:active {
+    transform: scale(.96);
+    background: var(--accent-dark);
+    color: #fff;
+  }
+  .step-btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+  .btn-group + .btn-group {
+    padding-left: var(--gap-md);
+    border-left: 2px solid var(--border);
+  }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-lg);
+    padding: var(--checkbox-pad-v) var(--checkbox-pad-h);
+    font-size: var(--fs-checkbox);
+    font-weight: 600;
+    color: #334155;
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    min-width: 0;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  .checkbox-field:focus-within {
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+  .checkbox-field input[type="checkbox"] {
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    margin: 0;
+    flex: none;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .checkbox-field .toggle-text {
+    line-height: 1.35;
+    min-width: 0;
+  }
+  .checkbox-field .toggle-text small {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--fs-checkbox-small);
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .summary {
+    padding: var(--summary-pad-v) var(--summary-pad-h);
+    margin: 0 var(--gap-md);
+    font-size: var(--fs-summary);
+    line-height: 1.5;
+    color: #3730a3;
+    background: #eef2ff;
+    border-radius: var(--radius-md);
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+  .summary.error {
+    color: var(--danger);
+    background: #fef2f2;
+  }
+
+  .status-bar {
+    margin-top: auto;
+    padding: var(--gap-md);
+    border-top: 1px solid var(--border);
+    background: #fff;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: clamp(48px, 6vmin, 80px);
+    padding: var(--summary-pad-v) var(--summary-pad-h);
+    font-size: var(--fs-status);
+    font-weight: 600;
+    text-align: center;
+    color: var(--muted);
+    background: #f8fafc;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+  }
+  .status.active {
+    color: #065f46;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    border-style: solid;
+  }
+  .status.loading {
+    color: #92400e;
+    background: #fffbeb;
+    border-color: #fde68a;
+    border-style: solid;
+  }
+  .status.done {
+    color: #3730a3;
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    border-style: solid;
+  }
+
+  iframe#viewerFrame {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+    z-index: 9998;
+    background: #fff;
+  }
+
+  /* ============================================================
+     四角熱區
+     ============================================================ */
+  .corner-stop {
+    position: fixed;
+    width: var(--corner-size);
+    height: var(--corner-size);
+    display: none;
+    z-index: 9999;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.viewing .corner-stop { display: block; }
+
+  .corner-stop[data-stop]:focus {
+    background: rgba(220, 38, 38, .22);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop[data-stop]:active { background: rgba(220, 38, 38, .55); }
+
+  .corner-stop[data-prev]:focus {
+    background: rgba(245, 158, 11, .35);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop[data-prev]:active { background: rgba(245, 158, 11, .65); }
+
+  .corner-stop[data-next]:focus {
+    background: rgba(34, 197, 94, .35);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop[data-next]:active { background: rgba(34, 197, 94, .65); }
+
+  .corner-stop.tr { top: 0;    right: 0; }
+  .corner-stop.bl { bottom: 0; left: 0;  }
+  .corner-stop.br { bottom: 0; right: 0; }
+
+  /* ============================================================
+     Modal 全屏
+     ============================================================ */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+  }
+  .modal[hidden] { display: none; }
+
+  .modal-panel {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+    min-height: var(--header-h);
+    border-bottom: 1px solid var(--border);
+    min-width: 0;
+  }
+
+  .modal-title {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--gap-xs);
+    padding: var(--gap-sm) var(--gap-md);
+    min-width: 0;
+  }
+  .modal-title h2 {
+    margin: 0;
+    font-size: var(--fs-h1);
+    letter-spacing: -.02em;
+  }
+
+  .modal-hint {
+    font-size: var(--fs-hint);
+    line-height: 1.3;
+    color: var(--muted);
+    word-break: break-word;
+  }
+
+  .modal-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  /* Modal 按鈕：貼邊、無圓角 */
+  .modal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 clamp(14px, 2.2vmin, 32px);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    font-family: inherit;
+    border: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    transition: background .12s, color .12s, box-shadow .12s;
+  }
+
+  .modal-btn.secondary {
+    color: var(--accent);
+    background: var(--stepper-bg);
+  }
+  .modal-btn.secondary:hover { background: #e0e7ff; }
+  .modal-btn.secondary:focus {
+    color: #fff;
+    background: var(--accent);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .3);
+  }
+  .modal-btn.secondary:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .1);
+  }
+
+  .modal-btn.primary {
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-left: 1px solid var(--accent-dark);
+  }
+  .modal-btn.primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  }
+  .modal-btn.primary:focus {
+    background: var(--accent-dark);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .35);
+  }
+  .modal-btn.primary:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+
+  .modal-btn.danger {
+    color: #fff;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-left: 1px solid #b91c1c;
+    font-size: clamp(20px, 2.8vmin, 40px);
+    font-weight: 700;
+    min-width: clamp(56px, 7vmin, 100px);
+    padding: 0;
+    line-height: 1;
+  }
+  .modal-btn.danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  .modal-btn.danger:focus {
+    background: #b91c1c;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .4);
+  }
+  .modal-btn.danger:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+
+  .modal-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding: var(--gap-md);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .modal-msg {
+    flex: 0 0 auto;
+    font-size: var(--fs-hint);
+    line-height: 1.4;
+    padding: var(--gap-sm) var(--gap-md);
+    border-radius: var(--radius-sm);
+    word-break: break-word;
+  }
+  .modal-msg[hidden] { display: none; }
+  .modal-msg.error   { color: var(--danger); background: #fef2f2; }
+  .modal-msg.success { color: #065f46;      background: #ecfdf5; }
+
+  /* ============================================================
+     JSON Modal
+     ============================================================ */
+  #jsonText {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--fs-code);
+    line-height: 1.5;
+    color: var(--text);
+    background: #f8fafc;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    outline: none;
+    resize: none;
+    tab-size: 2;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  #jsonText:focus {
+    background: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+  }
+
+  /* ============================================================
+     Log Modal
+     ============================================================ */
+  .log-count {
+    font-size: var(--fs-sub);
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: var(--gap-sm);
+  }
+
+  .log-session {
+    flex: 0 0 auto;
+    padding: var(--summary-pad-v) var(--summary-pad-h);
+    font-size: var(--fs-summary);
+    line-height: 1.5;
+    color: #3730a3;
+    background: #eef2ff;
+    border-radius: var(--radius-md);
+    white-space: pre-line;
+    word-break: break-word;
+  }
+  .log-session.crash {
+    color: var(--danger);
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+  }
+  .log-session[hidden] { display: none; }
+
+  .log-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    gap: 6px;
+    overflow: hidden;
+  }
+  .log-list {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--input-pad-v) var(--input-pad-h);
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--fs-code);
+    line-height: 1.5;
+    color: #e2e8f0;
+    background: #0f172a;
+    border: 2px solid var(--border);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .log-list::-webkit-scrollbar { width: 0; height: 0; }
+
+  .log-track {
+    flex: 0 0 16px;
+    position: relative;
+    background: #e2e8f0;
+    cursor: pointer;
+  }
+  .log-thumb {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    background: #6366f1;
+    min-height: 24px;
+    pointer-events: none;
+  }
+
+  .log-entry {
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+    word-break: break-word;
+    white-space: pre-wrap;
+    color: #e2e8f0;
+  }
+  .log-entry.warn { color: #fbbf24; }
+  .log-entry.crit { color: #f87171; }
+
+  /* ============================================================
+     Crash Report Modal
+     ============================================================ */
+  .modal-header.crash-header {
+    border-bottom: 2px solid #fecaca;
+  }
+  .modal-title .crash-title {
+    color: var(--danger);
+    font-weight: 800;
+    font-size: clamp(16px, 2.4vmin, 4.5vmin);
+    letter-spacing: -.02em;
+  }
+  .modal-title .crash-sub {
+    font-size: var(--fs-sub);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .crash-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--gap-md);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .crash-info {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--gap-sm);
+  }
+  .crash-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: var(--gap-sm) var(--gap-md);
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    min-width: 0;
+  }
+  .crash-cell .k {
+    font-size: var(--fs-hint);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .crash-cell .v {
+    font-size: var(--fs-input);
+    color: var(--text);
+    font-weight: 700;
+    word-break: break-word;
+    font-variant-numeric: tabular-nums;
+  }
+  .crash-cell .v.bad { color: var(--danger); }
+
+  .crash-url {
+    flex: 0 0 auto;
+    padding: var(--gap-sm) var(--gap-md);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: var(--fs-code);
+    color: #3730a3;
+    background: #eef2ff;
+    border-radius: var(--radius-sm);
+    word-break: break-all;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.35;
+    max-height: 2.7em;
+  }
+
+  .crash-logs-wrap {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-height: 0;
+    overflow: hidden;
+  }
+  .crash-logs-title {
+    flex: 0 0 auto;
+    font-size: var(--fs-hint);
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .crash-logs {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: var(--gap-sm) var(--gap-md);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: var(--fs-code);
+    line-height: 1.35;
+    color: #e2e8f0;
+    background: #0f172a;
+    border-radius: var(--radius-sm);
+  }
+  .crash-logs .cr {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .crash-logs .cr .t { color: #94a3b8; flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+  .crash-logs .cr .m { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .crash-logs .cr.warn .m { color: #fbbf24; }
+  .crash-logs .cr.crit .m { color: #f87171; }
+
+  /* ============================================================
+     響應式
+     ============================================================ */
+  @media (max-width: 1000px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .address-field,
+    .loop-field,
+    .remember-field { grid-column: auto; }
+  }
+
+  @media (max-width: 900px) {
+    .app-header {
+      min-height: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #startBtn {
+      order: 1;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: clamp(60px, 7.5vmin, 100px);
+      border-right: 0;
+      border-bottom: 1px solid var(--accent-dark);
+    }
+    .app-header-text {
+      order: 2;
+      width: 100%;
+      flex: 1 1 auto;
+    }
+    .header-actions {
+      order: 3;
+      width: 100%;
+      border-top: 1px solid var(--border);
+    }
+    .header-btn,
+    #stopBtn {
+      flex: 1 1 0;
+      min-height: clamp(48px, 6vmin, 80px);
+      border-left: 1px solid var(--border);
+    }
+    .header-btn:first-child { border-left: 0; }
+    #stopBtn { border-left: 1px solid #b91c1c; }
+
+    .modal-header {
+      min-height: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .modal-title {
+      width: 100%;
+      flex: 0 0 auto;
+    }
+    .modal-actions {
+      width: 100%;
+      border-top: 1px solid var(--border);
+    }
+    .modal-btn {
+      flex: 1 1 0;
+      min-height: clamp(48px, 6vmin, 80px);
+    }
+    .modal-btn.danger {
+      flex: 0 0 auto;
+      min-width: clamp(56px, 12vmin, 100px);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .stepper input { flex: 1 1 100%; min-width: 0; }
+    .btn-group { flex: 1 1 auto; }
+    .btn-group + .btn-group { padding-left: 0; border-left: 0; }
+    .step-btn { flex: 1; width: auto; }
+  }
+  @media (max-height: 720px) {
+    .hint { display: none; }
+  }
+  @media (max-height: 580px) {
+    .sub { display: none; }
+    .checkbox-field .toggle-text small { display: none; }
+    .app { gap: var(--gap-sm); }
+    .settings-grid { gap: var(--gap-md) var(--gap-lg); }
+    .crash-info { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="app">
+    <header class="app-header">
+      <button type="button" id="startBtn">▶ START</button>
+
+      <div class="app-header-text">
+        <h1>Page Rotation Setup</h1>
+        <p class="sub">
+          輸入基礎網址、選擇翻頁方式、頁數及每頁時間。按左上角 ▶ START 開始，
+          播放期間：右上角停止、左下角上一頁、右下角下一頁（或按 Esc 停止）。
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="header-btn" id="logBtn" aria-haspopup="dialog">
+          Log
+        </button>
+        <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">
+          { } JSON
+        </button>
+        <button type="button" id="stopBtn" disabled>STOP</button>
+      </div>
+    </header>
+
+    <form id="settingsForm" novalidate class="settings-grid">
+      <div class="field address-field">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address"
+               placeholder="https://example.com/page"
+               autocomplete="off" spellcheck="false" required />
+        <small class="hint">輸入基礎網址（毋須包含 <code>{page}</code>）。</small>
+      </div>
+
+      <div class="field pagecount-field">
+        <label for="pageCount">Page count</label>
+        <div class="stepper">
+          <input type="number" id="pageCount" name="pageCount"
+                 min="1" step="1" value="1" inputmode="numeric" required />
+          <div class="btn-group">
+            <button type="button" class="step-btn" data-step="-1" data-target="pageCount" aria-label="減少頁數">−</button>
+            <button type="button" class="step-btn" data-step="1"  data-target="pageCount" aria-label="增加頁數">+</button>
+          </div>
+        </div>
+        <small class="hint">總頁數（最少 1）</small>
+      </div>
+
+      <div class="field pagemode-field">
+        <label for="pageMode">Next page method</label>
+        <select id="pageMode" name="pageMode">
+          <option value="{url}#{page}" selected>{url}#{page} — Hash（預設）</option>
+          <option value="{url}?page={page}">{url}?page={page} — Query page</option>
+          <option value="{url}?p={page}">{url}?p={page} — Query p</option>
+          <option value="{url}?pageNum={page}">{url}?pageNum={page} — Query pageNum</option>
+          <option value="{url}/{page}">{url}/{page} — Path</option>
+          <option value="{url}/page/{page}">{url}/page/{page} — Path /page/</option>
+          <option value="template">{page} in address — 自訂模板</option>
+        </select>
+        <small class="hint">自訂模板會直接替換 Address 內嘅 <code>{page}</code>。</small>
+      </div>
+
+      <div class="field time-field">
+        <label for="pageTime">Time to show each page (sec)</label>
+        <div class="stepper">
+          <input type="number" id="pageTime" name="pageTime"
+                 min="0.1" step="0.1" value="10" inputmode="decimal" required />
+          <div class="btn-group">
+            <button type="button" class="step-btn" data-step="-1" data-target="pageTime" aria-label="減少 1 秒">−1</button>
+            <button type="button" class="step-btn" data-step="1"  data-target="pageTime" aria-label="增加 1 秒">+1</button>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="step-btn dec" data-step="-0.1" data-target="pageTime" aria-label="減少 0.1 秒">−0.1</button>
+            <button type="button" class="step-btn dec" data-step="0.1"  data-target="pageTime" aria-label="增加 0.1 秒">+0.1</button>
+          </div>
+        </div>
+        <small class="hint">整數用 <code>−1</code> / <code>+1</code>；小數用 <code>−0.1</code> / <code>+0.1</code>。</small>
+      </div>
+
+      <div class="field loop-field">
+        <label class="checkbox-field" for="loopToggle">
+          <input type="checkbox" id="loopToggle" checked />
+          <span class="toggle-text">
+            Loop pages（循環播放）
+            <small>取消勾選：最後一頁完成後停止</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="field remember-field">
+        <label class="checkbox-field" for="rememberToggle">
+          <input type="checkbox" id="rememberToggle" />
+          <span class="toggle-text">
+            Remember my settings（記住設定）
+            <small>勾選後自動儲存於此裝置，下次開啟自動載入</small>
+          </span>
+        </label>
+      </div>
+    </form>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="status-bar">
+      <div class="status" id="status">Ready</div>
+    </div>
+  </div>
+
+  <!-- JSON Modal -->
+  <div class="modal" id="jsonModal" hidden role="dialog" aria-modal="true" aria-labelledby="jsonModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="jsonModalTitle">Settings JSON</h2>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="copyJsonBtn">Copy</button>
+          <button type="button" class="modal-btn primary"   id="applyJsonBtn">Apply</button>
+          <button type="button" class="modal-btn danger"    id="closeJsonBtn" aria-label="關閉">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <textarea id="jsonText" spellcheck="false" autocomplete="off"
+                  aria-label="Settings JSON"></textarea>
+        <div class="modal-msg" id="jsonMsg" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log Modal（所有按鈕在頂部：▲▼ / Clear / Copy / ×） -->
+  <div class="modal" id="logModal" hidden role="dialog" aria-modal="true" aria-labelledby="logModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h2 id="logModalTitle">Logs <span class="log-count" id="logCount">(0)</span></h2>
+          <div class="modal-hint">↑/↓ 小步 · ←/→ 大步 · 數字 1-9 跳到 10%-90% · 0 跳到底 · 點右側滾動條即跳轉 · Esc 關閉</div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="logScrollUp"   aria-label="向上滾動">▲ 向上</button>
+          <button type="button" class="modal-btn secondary" id="logScrollDown" aria-label="向下滾動">▼ 向下</button>
+          <button type="button" class="modal-btn secondary" id="clearLogsBtn">Clear</button>
+          <button type="button" class="modal-btn secondary" id="copyLogsBtn">Copy</button>
+          <button type="button" class="modal-btn danger"    id="closeLogBtn" aria-label="關閉">×</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="log-session" id="logSession" hidden></div>
+        <div class="log-body">
+          <div class="log-list" id="logList"></div>
+          <div class="log-track" id="logTrack" aria-hidden="true">
+            <div class="log-thumb" id="logThumb"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crash Report Modal -->
+  <div class="modal" id="crashModal" hidden role="dialog" aria-modal="true" aria-labelledby="crashTitle">
+    <div class="modal-panel">
+      <div class="modal-header crash-header">
+        <div class="modal-title">
+          <h2 class="crash-title" id="crashTitle">⚠️ 偵測到上次異常結束</h2>
+          <div class="crash-sub" id="crashSub"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="crashCloseBtn">關閉（留在設定頁）</button>
+          <button type="button" class="modal-btn primary"   id="crashContinueBtn">繼續播放</button>
+        </div>
+      </div>
+      <div class="crash-body">
+        <div class="crash-info" id="crashInfo"></div>
+        <div class="crash-url" id="crashUrl"></div>
+        <div class="crash-logs-wrap">
+          <div class="crash-logs-title">最後日誌（warn / error 優先）</div>
+          <div class="crash-logs" id="crashLogs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 四角熱區 -->
+  <button type="button" class="corner-stop tr" data-stop aria-label="停止"></button>
+  <button type="button" class="corner-stop bl" data-prev aria-label="上一頁"></button>
+  <button type="button" class="corner-stop br" data-next aria-label="下一頁"></button>
+
+<script>
+(function () {
+  /* ============================================================
+     日誌 / Heartbeat / Session 持久層
+     ============================================================ */
+  const LOG_KEY       = 'pageRot.log.v1';
+  const SESSION_KEY   = 'pageRot.sessions.v1';
+  const HEARTBEAT_KEY = 'pageRot.heartbeat.v1';
+  const TAB_KEY       = 'pageRot.tab.v1';
+
+  const LOG_MAX        = 250;
+  const SESSION_MAX    = 30;
+  const FLUSH_DEBOUNCE = 300;
+  const HB_INTERVAL    = 10000;
+  const CRASH_GAP_MS   = 30000;
+
+  let logBuffer      = [];
+  let sessions       = [];
+  let flushTimer     = null;
+  let hbTimer        = null;
+  let currentSession = null;
+  let previousState  = null;
+
+  function safeRead(key) {
+    try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; }
+  }
+  function safeWrite(key, obj) {
+    try { localStorage.setItem(key, JSON.stringify(obj)); return true; }
+    catch (e) { return false; }
+  }
+  function loadPersisted() {
+    const logs = safeRead(LOG_KEY);
+    if (logs && Array.isArray(logs.entries)) logBuffer = logs.entries.slice(-LOG_MAX);
+    const ses  = safeRead(SESSION_KEY);
+    if (ses  && Array.isArray(ses.entries))  sessions  = ses.entries.slice(-SESSION_MAX);
+  }
+  loadPersisted();
+
+  function flushLogs() {
+    if (flushTimer) { clearTimeout(flushTimer); flushTimer = null; }
+    safeWrite(LOG_KEY, { version: 1, updatedAt: new Date().toISOString(), entries: logBuffer });
+  }
+  function flushSessions() {
+    safeWrite(SESSION_KEY, { version: 1, updatedAt: new Date().toISOString(), entries: sessions });
+  }
+  function scheduleFlush() {
+    if (flushTimer) return;
+    flushTimer = setTimeout(flushLogs, FLUSH_DEBOUNCE);
+  }
+  function serArg(a) {
+    if (typeof a === 'string') return a;
+    if (a instanceof Error) return a.message;
+    try { return JSON.stringify(a); } catch (e) { return String(a); }
+  }
+  function pushLog(level, args) {
+    logBuffer.push({ t: Date.now(), level, msg: args.map(serArg).join(' ') });
+    if (logBuffer.length > LOG_MAX) logBuffer.shift();
+    scheduleFlush();
+    if (currentSession) {
+      currentSession.logCount = (currentSession.logCount || 0) + 1;
+      if (level === 'crit' || level === 'warn') flushSessions();
+    }
+  }
+
+  const log  = (...a) => pushLog('info', a);
+  const warn = (...a) => pushLog('warn', a);
+  const err  = (...a) => pushLog('crit', a);
+
+  function newSessionId() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+  }
+  function startSession(settings) {
+    currentSession = {
+      id: newSessionId(),
+      startAt: Date.now(),
+      endAt: null,
+      endReason: null,
+      address: settings.address,
+      mode: settings.mode,
+      totalPages: settings.totalPages,
+      secondsPerPage: settings.secondsPerPage,
+      loop: settings.loop,
+      pagesCompleted: 0,
+      loops: 0,
+      logCount: 0
+    };
+    sessions.push(currentSession);
+    if (sessions.length > SESSION_MAX) sessions.shift();
+    flushSessions();
+    log('SESSION 開始', {
+      id: currentSession.id,
+      totalPages: settings.totalPages,
+      sec: settings.secondsPerPage,
+      loop: settings.loop
+    });
+  }
+  function endSession(reason) {
+    if (!currentSession) return;
+    currentSession.endAt = Date.now();
+    currentSession.endReason = reason;
+    flushSessions();
+    log('SESSION 結束', {
+      id: currentSession.id,
+      reason,
+      pagesCompleted: currentSession.pagesCompleted
+    });
+    currentSession = null;
+  }
+
+  function writeHeartbeat(phase, extra) {
+    const hb = {
+      ts: Date.now(),
+      phase,
+      page: state ? state.page : 0,
+      totalPages: state ? state.totalPages : 0,
+      pagesCompleted: currentSession ? currentSession.pagesCompleted : 0,
+      loops: currentSession ? currentSession.loops : 0,
+      url: lastLoadedUrl || '',
+      deadline: state ? state.deadline : 0,
+      sessionId: currentSession ? currentSession.id : null
+    };
+    if (state) {
+      hb.address        = state.address;
+      hb.mode           = state.mode;
+      hb.secondsPerPage = state.secondsPerPage;
+      hb.loop           = state.loop;
+    }
+    if (extra) Object.assign(hb, extra);
+    safeWrite(HEARTBEAT_KEY, hb);
+  }
+  function startHeartbeat() {
+    stopHeartbeat();
+    hbTimer = setInterval(() => {
+      writeHeartbeat(state ? (state.phase || 'countdown') : 'idle');
+    }, HB_INTERVAL);
+  }
+  function stopHeartbeat() {
+    if (hbTimer) { clearInterval(hbTimer); hbTimer = null; }
+  }
+
+  function detectPreviousCrash() {
+    const hb = safeRead(HEARTBEAT_KEY);
+    previousState = hb;
+
+    let lastTabTs = 0;
+    try { lastTabTs = Number(sessionStorage.getItem(TAB_KEY)) || 0; } catch (e) {}
+    try { sessionStorage.setItem(TAB_KEY, String(Date.now())); } catch (e) {}
+    setInterval(() => {
+      try { sessionStorage.setItem(TAB_KEY, String(Date.now())); } catch (e) {}
+    }, 5000);
+
+    if (!hb || !hb.ts) { log('新 session（無舊 heartbeat）'); return 'fresh'; }
+    const gap = Date.now() - hb.ts;
+    const wasRunning = hb.phase === 'loading' || hb.phase === 'countdown';
+
+    if (wasRunning && gap > CRASH_GAP_MS) {
+      warn('⚠️ 偵測到上次異常結束', {
+        gapMs: gap, phase: hb.phase, page: hb.page,
+        pagesCompleted: hb.pagesCompleted, loops: hb.loops
+      });
+      if (hb.sessionId) {
+        const prevSess = sessions.find(s => s.id === hb.sessionId);
+        if (prevSess && !prevSess.endReason) {
+          prevSess.endAt = hb.ts;
+          prevSess.endReason = 'crash';
+          prevSess.pagesCompleted = hb.pagesCompleted || prevSess.pagesCompleted;
+          prevSess.loops = hb.loops || prevSess.loops;
+          flushSessions();
+        }
+      }
+      return 'crash';
+    }
+    if (wasRunning && lastTabTs && Date.now() - lastTabTs < 5000) {
+      warn('⚠️ 頁面疑似被 reload', { gapMs: gap, phase: hb.phase, page: hb.page });
+      return 'reload';
+    }
+    log('新 session（上次結束於 ' + Math.round(gap / 1000) + 's 前，phase=' + hb.phase + '）');
+    return 'normal';
+  }
+
+  window.addEventListener('pagehide', () => {
+    pushLog('info', ['window pagehide']); flushLogs(); flushSessions();
+  });
+  window.addEventListener('beforeunload', () => {
+    pushLog('info', ['window beforeunload']);
+    if (state) writeHeartbeat('closing');
+    flushLogs(); flushSessions();
+  });
+  window.addEventListener('pageshow', e => log('window pageshow', { persisted: e.persisted }));
+  window.addEventListener('error', e => err('window error', {
+    message: e.message, file: e.filename, line: e.lineno, col: e.colno
+  }));
+  window.addEventListener('unhandledrejection', e => err('unhandled rejection', { reason: String(e.reason) }));
+  document.addEventListener('visibilitychange', () => log('visibilitychange', { state: document.visibilityState }));
+  window.addEventListener('popstate',   () => log('window popstate',   { url: location.href }));
+  window.addEventListener('hashchange', () => log('window hashchange', { url: location.href }));
+
+  /* ============================================================
+     設定
+     ============================================================ */
+  const STORAGE_KEY     = 'pageRotationSettings.v1';
+  const STORAGE_VERSION = 1;
+
+  const addressEl   = document.getElementById('address');
+  const pageModeEl  = document.getElementById('pageMode');
+  const pageCountEl = document.getElementById('pageCount');
+  const pageTimeEl  = document.getElementById('pageTime');
+  const loopEl      = document.getElementById('loopToggle');
+  const rememberEl  = document.getElementById('rememberToggle');
+  const startBtn    = document.getElementById('startBtn');
+  const stopBtn     = document.getElementById('stopBtn');
+  const summaryEl   = document.getElementById('summary');
+  const statusEl    = document.getElementById('status');
+  const cornerStops = Array.from(document.querySelectorAll('[data-stop]'));
+  const cornerPrev  = Array.from(document.querySelectorAll('[data-prev]'));
+  const cornerNext  = Array.from(document.querySelectorAll('[data-next]'));
+  const stepBtns    = Array.from(document.querySelectorAll('.step-btn'));
+
+  const openJsonBtn  = document.getElementById('openJsonBtn');
+  const closeJsonBtn = document.getElementById('closeJsonBtn');
+  const jsonModal    = document.getElementById('jsonModal');
+  const jsonText     = document.getElementById('jsonText');
+  const jsonMsg      = document.getElementById('jsonMsg');
+  const copyJsonBtn  = document.getElementById('copyJsonBtn');
+  const applyJsonBtn = document.getElementById('applyJsonBtn');
+
+  const LOAD_TIMEOUT_MS = 15000;
+  const TICK_MS = 100;
+
+  let tickId = null;
+  let loadTimer = null;
+  let pendingLoad = false;
+  let lastLoadedUrl = null;
+  let state = null;
+  let iframeEl = null;
+  let lastFocusedBeforeModal = null;
+
+  function readStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      log('localStorage 讀取', data);
+      return data;
+    } catch (e) { warn('localStorage 讀取失敗', e); return null; }
+  }
+  function writeStorage(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); log('localStorage 已儲存', data); }
+    catch (e) { warn('localStorage 寫入失敗', e); }
+  }
+  function clearStorage() {
+    try { localStorage.removeItem(STORAGE_KEY); log('localStorage 已清除'); }
+    catch (e) { warn('localStorage 清除失敗', e); }
+  }
+  function collectSettings() {
+    return {
+      version: STORAGE_VERSION,
+      address: addressEl.value.trim(),
+      mode: pageModeEl.value,
+      pageCount: pageCountEl.value,
+      pageTime: pageTimeEl.value,
+      loop: loopEl.checked,
+      remember: rememberEl.checked
+    };
+  }
+  function maybePersist() {
+    if (!rememberEl.checked) return;
+    writeStorage(collectSettings());
+  }
+  function isKnownMode(mode) {
+    if (typeof mode !== 'string') return false;
+    return Array.from(pageModeEl.options).some(o => o.value === mode);
+  }
+  function applyStoredSettings(data) {
+    if (!data || typeof data !== 'object') return false;
+    if (data.version != null && data.version !== STORAGE_VERSION) {
+      warn('JSON 版本不符', { got: data.version, expected: STORAGE_VERSION });
+    }
+    if (typeof data.address === 'string') addressEl.value = data.address;
+    if (isKnownMode(data.mode))           pageModeEl.value = data.mode;
+    if (data.pageCount != null)           pageCountEl.value = data.pageCount;
+    if (data.pageTime  != null)           pageTimeEl.value  = data.pageTime;
+    if (typeof data.loop === 'boolean')   loopEl.checked = data.loop;
+    if (typeof data.remember === 'boolean') rememberEl.checked = data.remember;
+    log('已套用設定', collectSettings());
+    return true;
+  }
+
+  function fmtSeconds(v) {
+    return Number.isInteger(v) ? String(v) : v.toFixed(1);
+  }
+  function stripHash(u) {
+    const i = u.indexOf('#');
+    return i < 0 ? u : u.slice(0, i);
+  }
+  function applyStep(btn) {
+    const target = document.getElementById(btn.dataset.target);
+    if (!target || target.disabled) return;
+    const stepStr = btn.dataset.step;
+    const step = parseFloat(stepStr);
+    const min = parseFloat(target.min);
+    let val = parseFloat(target.value);
+    if (!Number.isFinite(val)) val = Number.isFinite(min) ? min : 0;
+    if (!Number.isFinite(min)) val = Math.max(val, 0);
+    val += step;
+    const decimals = (stepStr.split('.')[1] || '').length;
+    val = Number(val.toFixed(decimals));
+    if (val < min) val = min;
+    target.value = val;
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
+    log('step', { target: target.id, value: target.value, by: stepStr });
+  }
+  function readSettings() {
+    const address        = addressEl.value.trim();
+    const mode           = pageModeEl.value;
+    const totalPages     = Number(pageCountEl.value);
+    const secondsPerPage = Number(pageTimeEl.value);
+    const loop           = loopEl.checked;
+    const errors = {};
+    if (!address) errors.address = true;
+    if (!Number.isInteger(totalPages) || totalPages < 1) errors.pageCount = true;
+    if (!Number.isFinite(secondsPerPage) || secondsPerPage < 0.1) errors.pageTime = true;
+    return {
+      address, mode, totalPages, secondsPerPage, loop,
+      valid: Object.keys(errors).length === 0,
+      errors
+    };
+  }
+  function refresh() {
+    const s = readSettings();
+    const running = state !== null;
+    addressEl.classList.toggle('invalid', !running && s.errors.address);
+    pageCountEl.classList.toggle('invalid', !running && s.errors.pageCount);
+    pageTimeEl.classList.toggle('invalid', !running && s.errors.pageTime);
+    startBtn.disabled = running || !s.valid;
+    if (!s.valid) {
+      summaryEl.classList.add('error');
+      summaryEl.textContent = '請填寫所有欄位；頁數需為整數且 ≥ 1，每頁時間需 ≥ 0.1 秒。';
+      return;
+    }
+    summaryEl.classList.remove('error');
+    const total = s.totalPages * s.secondsPerPage;
+    summaryEl.textContent = s.loop
+      ? s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
+        ' 秒 = 每輪 ' + fmtSeconds(total) + ' 秒，循環播放'
+      : s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
+        ' 秒 = 合共 ' + fmtSeconds(total) + ' 秒，完成後停止';
+  }
+  function buildPageUrl(base, page, mode) {
+    if (mode === 'template') return base.replaceAll('{page}', String(page));
+    return mode.replaceAll('{url}', base).replaceAll('{page}', String(page));
+  }
+
+  function setStatus(mode, text) {
+    if (state !== null) return;
+    statusEl.classList.remove('active', 'loading', 'done');
+    if (mode) statusEl.classList.add(mode);
+    statusEl.textContent = text;
+  }
+
+  function createIframe() {
+    removeIframe();
+    iframeEl = document.createElement('iframe');
+    iframeEl.id = 'viewerFrame';
+    iframeEl.title = 'Page viewer';
+    iframeEl.addEventListener('load', onFrameLoaded);
+    iframeEl.addEventListener('error', () => {
+      err('iframe error event', { src: iframeEl ? iframeEl.src : '' });
+    });
+    document.body.appendChild(iframeEl);
+    document.body.classList.add('viewing');
+  }
+  function removeIframe() {
+    if (iframeEl) {
+      iframeEl.removeEventListener('load', onFrameLoaded);
+      iframeEl.remove();
+      iframeEl = null;
+    }
+    document.body.classList.remove('viewing');
+  }
+  function clearLoadTimer() {
+    if (loadTimer) { clearTimeout(loadTimer); loadTimer = null; }
+  }
+  function clearTick() {
+    if (tickId) { clearInterval(tickId); tickId = null; }
+  }
+  function loadPage(pageNumber) {
+    if (!state || !iframeEl) return;
+    state.page = pageNumber;
+    state.phase = 'loading';
+    clearTick();
+    clearLoadTimer();
+    pendingLoad = false;
+    const url = buildPageUrl(state.address, state.page, state.mode);
+    log('loadPage', { page: state.page, url });
+    writeHeartbeat('loading', { loadingUrl: url });
+    const sameUrl  = (url === lastLoadedUrl);
+    const hashOnly = lastLoadedUrl && (stripHash(url) === stripHash(lastLoadedUrl));
+    if (sameUrl) {
+      log('→ URL 相同，毋須 reload，直接倒數');
+      beginCountdown();
+      return;
+    }
+    if (hashOnly) {
+      log('→ 只有 hash 改變，略過等待 load');
+      lastLoadedUrl = url;
+      iframeEl.src = url;
+      beginCountdown();
+      return;
+    }
+    pendingLoad = true;
+    lastLoadedUrl = url;
+    loadTimer = setTimeout(() => {
+      if (pendingLoad) {
+        pendingLoad = false;
+        warn('→ 等 load 逾時（' + LOAD_TIMEOUT_MS + 'ms），強制開始倒數');
+        beginCountdown();
+      }
+    }, LOAD_TIMEOUT_MS);
+    iframeEl.src = url;
+  }
+  function onFrameLoaded() {
+    log('iframe load event', { pendingLoad, page: state && state.page });
+    if (!state || !pendingLoad) return;
+    pendingLoad = false;
+    clearLoadTimer();
+    beginCountdown();
+  }
+  function beginCountdown() {
+    if (!state) return;
+    clearTick();
+    state.deadline = Date.now() + state.secondsPerPage * 1000;
+    state.phase = 'countdown';
+    writeHeartbeat('countdown');
+    log('beginCountdown', {
+      page: state.page,
+      seconds: state.secondsPerPage,
+      deadline: state.deadline
+    });
+    tickId = setInterval(tick, TICK_MS);
+  }
+  function tick() {
+    if (!state) return;
+    if (state.deadline - Date.now() > 0) return;
+    log('countdown 完結', { page: state.page, loop: state.loop });
+    clearTick();
+    if (currentSession) {
+      currentSession.pagesCompleted += 1;
+      if (currentSession.pagesCompleted % 10 === 0) {
+        log('進度', {
+          completed: currentSession.pagesCompleted,
+          page: state.page,
+          loops: currentSession.loops
+        });
+      }
+    }
+    if (state.page >= state.totalPages) {
+      if (state.loop) {
+        log('循環 → 回到第 1 頁');
+        if (currentSession) currentSession.loops += 1;
+        loadPage(1);
+      } else {
+        log('全部頁面完成');
+        finish();
+      }
+      return;
+    }
+    loadPage(state.page + 1);
+  }
+
+  function prevPage() {
+    if (!state) return;
+    log('PREV page', { from: state.page });
+    if (state.page > 1) {
+      loadPage(state.page - 1);
+    } else if (state.loop) {
+      loadPage(state.totalPages);
+    } else {
+      log('→ 已在第 1 頁，重啟當前頁倒數');
+      beginCountdown();
+    }
+  }
+  function nextPage() {
+    if (!state) return;
+    log('NEXT page', { from: state.page });
+    if (state.page < state.totalPages) {
+      loadPage(state.page + 1);
+    } else if (state.loop) {
+      loadPage(1);
+    } else {
+      log('全部頁面完成（手動跳過）');
+      finish();
+    }
+  }
+
+  function start() {
+    const s = readSettings();
+    if (!s.valid || state) return;
+
+    closeJsonModal();
+    closeLogModal();
+    closeCrashModal();
+    log('START', s);
+    startSession(s);
+
+    state = {
+      address: s.address,
+      mode: s.mode,
+      totalPages: s.totalPages,
+      secondsPerPage: s.secondsPerPage,
+      loop: s.loop,
+      page: 1,
+      deadline: 0,
+      phase: 'loading'
+    };
+    lastLoadedUrl = null;
+    writeHeartbeat('loading');
+    startHeartbeat();
+
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+      .forEach(el => (el.disabled = true));
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+    createIframe();
+    loadPage(1);
+  }
+  function resetControls() {
+    log('resetControls');
+    clearTick();
+    clearLoadTimer();
+    pendingLoad = false;
+    lastLoadedUrl = null;
+    state = null;
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+      .forEach(el => (el.disabled = false));
+    stopBtn.disabled = true;
+    removeIframe();
+    refresh();
+  }
+  function stop() {
+    if (!state) return;
+    log('STOP');
+    endSession('manual');
+    stopHeartbeat();
+    resetControls();
+    writeHeartbeat('stopped');
+    setStatus(null, '已停止');
+  }
+  function finish() {
+    log('FINISH');
+    endSession('finished');
+    stopHeartbeat();
+    resetControls();
+    writeHeartbeat('finished');
+    setStatus('done', '完成 — 所有頁面已顯示');
+  }
+
+  /* ============================================================
+     JSON Modal
+     ============================================================ */
+  function showJsonMsg(kind, text) {
+    jsonMsg.hidden = false;
+    jsonMsg.className = 'modal-msg ' + kind;
+    jsonMsg.textContent = text;
+  }
+  function hideJsonMsg() {
+    jsonMsg.hidden = true;
+    jsonMsg.textContent = '';
+  }
+  function openJsonModal() {
+    lastFocusedBeforeModal = document.activeElement;
+    const data = collectSettings();
+    jsonText.value = JSON.stringify(data, null, 2);
+    hideJsonMsg();
+    jsonModal.hidden = false;
+    requestAnimationFrame(() => {
+      jsonText.focus();
+      try { jsonText.setSelectionRange(0, 0); } catch (e) {}
+      jsonText.scrollTop = 0;
+    });
+    log('打開 JSON modal');
+  }
+  function closeJsonModal() {
+    if (jsonModal.hidden) return;
+    jsonModal.hidden = true;
+    hideJsonMsg();
+    log('關閉 JSON modal');
+    if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) {
+      try { lastFocusedBeforeModal.focus(); } catch (e) {}
+    }
+  }
+  async function copyJson() {
+    const text = jsonText.value;
+    let ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text); ok = true;
+      }
+    } catch (e) { warn('clipboard API 失敗', e); }
+    if (!ok) {
+      try { jsonText.focus(); jsonText.select(); ok = document.execCommand('copy'); }
+      catch (e) { warn('execCommand copy 失敗', e); }
+    }
+    if (ok) showJsonMsg('success', '已複製到剪貼簿');
+    else    showJsonMsg('error',   '複製失敗，請手動選取文字 (Ctrl/⌘ + C)');
+  }
+  function applyJson() {
+    const raw = jsonText.value.trim();
+    if (!raw) { showJsonMsg('error', 'Textarea 係空嘅'); return; }
+    let parsed;
+    try { parsed = JSON.parse(raw); }
+    catch (e) { showJsonMsg('error', 'JSON 格式錯誤：' + e.message); return; }
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      showJsonMsg('error', 'JSON 頂層必須係物件 { … }');
+      return;
+    }
+    applyStoredSettings(parsed);
+    if (parsed.version != null && parsed.version !== STORAGE_VERSION) {
+      showJsonMsg('success',
+        '已套用（注意：JSON 版本 v' + parsed.version +
+        '，目前版本 v' + STORAGE_VERSION + '）');
+    } else {
+      showJsonMsg('success', '已套用設定');
+    }
+    refresh();
+    if (rememberEl.checked) writeStorage(collectSettings());
+    else                    clearStorage();
+    setStatus(null, '已套用 JSON 設定');
+  }
+
+  /* ============================================================
+     Log Modal
+     ============================================================ */
+  const logBtn          = document.getElementById('logBtn');
+  const logModal        = document.getElementById('logModal');
+  const logList         = document.getElementById('logList');
+  const logCountEl      = document.getElementById('logCount');
+  const logSessionEl    = document.getElementById('logSession');
+  const closeLogBtn     = document.getElementById('closeLogBtn');
+  const clearLogsBtn    = document.getElementById('clearLogsBtn');
+  const copyLogsBtn     = document.getElementById('copyLogsBtn');
+  const logTrack        = document.getElementById('logTrack');
+  const logThumb        = document.getElementById('logThumb');
+  const logScrollUp     = document.getElementById('logScrollUp');
+  const logScrollDown   = document.getElementById('logScrollDown');
+
+  let renderedCount = 0;
+  let thumbRafId    = null;
+
+  function fmtTime(ts) {
+    const d = new Date(ts); const p = n => String(n).padStart(2, '0');
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) +
+           '.' + String(d.getMilliseconds()).padStart(3, '0');
+  }
+  function fmtTimeShort(ts) {
+    const d = new Date(ts); const p = n => String(n).padStart(2, '0');
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+  function fmtDuration(ms) {
+    const s = Math.floor(Math.max(0, ms) / 1000);
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return (h ? h + 'h ' : '') + m + 'm ' + sec + 's';
+  }
+  function fmtLevel(l) { return l === 'crit' ? 'ERR' : l.toUpperCase(); }
+
+  function buildLogRow(e) {
+    const row = document.createElement('div');
+    row.className = 'log-entry ' + e.level;
+    row.textContent = fmtTime(e.t) + ' ' + fmtLevel(e.level) + ' ' + e.msg;
+    return row;
+  }
+
+  function renderSessionInfo() {
+    const lines = [];
+    let isCrash = false;
+    if (previousState && previousState.sessionId) {
+      const prev = sessions.find(s => s.id === previousState.sessionId);
+      if (prev) {
+        if (prev.endReason === 'crash') {
+          isCrash = true;
+          lines.push('⚠️ 上次異常結束：' +
+            new Date(prev.startAt).toLocaleString() +
+            '，持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt) +
+            '，完成 ' + prev.pagesCompleted + ' 頁');
+          lines.push('  最後狀態：phase=' + previousState.phase +
+            ' page=' + previousState.page + '/' + previousState.totalPages);
+        } else if (prev.endReason) {
+          lines.push('上次：' + new Date(prev.startAt).toLocaleString() +
+            '，' + prev.endReason + '，完成 ' + prev.pagesCompleted + ' 頁，' +
+            '持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt));
+        }
+      }
+    }
+    if (currentSession) {
+      lines.push('本次：' + new Date(currentSession.startAt).toLocaleString() +
+        '，進行中，完成 ' + currentSession.pagesCompleted + ' 頁');
+    }
+    if (lines.length === 0) { logSessionEl.hidden = true; return; }
+    logSessionEl.hidden = false;
+    logSessionEl.className = 'log-session' + (isCrash ? ' crash' : '');
+    logSessionEl.textContent = lines.join('\n');
+  }
+
+  function updateLogThumbNow() {
+    thumbRafId = null;
+    if (!logList || !logTrack || !logThumb) return;
+    const sh = logList.scrollHeight;
+    const ch = logList.clientHeight;
+    const th = logTrack.clientHeight;
+    if (sh <= ch + 1 || th <= 0) {
+      logThumb.style.display = 'none';
+      return;
+    }
+    logThumb.style.display = '';
+    const thumbH = Math.max(24, (ch / sh) * th);
+    const maxTop = th - thumbH;
+    const maxScroll = sh - ch;
+    const ratio = maxScroll > 0 ? logList.scrollTop / maxScroll : 0;
+    const top = Math.min(maxTop, Math.max(0, ratio * maxTop));
+    logThumb.style.height = thumbH + 'px';
+    logThumb.style.top = top + 'px';
+  }
+  function scheduleThumbUpdate() {
+    if (thumbRafId !== null) return;
+    thumbRafId = requestAnimationFrame(updateLogThumbNow);
+  }
+
+  function renderLogs(scrollBottom) {
+    if (!logList) return;
+    const wasAtBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 40;
+
+    if (logBuffer.length < renderedCount) {
+      logList.innerHTML = '';
+      renderedCount = 0;
+    }
+    if (logBuffer.length > renderedCount) {
+      const frag = document.createDocumentFragment();
+      for (let i = renderedCount; i < logBuffer.length; i++) {
+        frag.appendChild(buildLogRow(logBuffer[i]));
+      }
+      logList.appendChild(frag);
+      renderedCount = logBuffer.length;
+    }
+
+    logCountEl.textContent = '(' + logBuffer.length + ')';
+    renderSessionInfo();
+
+    if (scrollBottom || wasAtBottom) logList.scrollTop = logList.scrollHeight;
+    scheduleThumbUpdate();
+  }
+
+  function scrollLogBy(dir) {
+    if (!logList) return;
+    const atBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 4;
+    if (dir > 0 && atBottom && logBuffer.length !== renderedCount) {
+      renderLogs(true);
+      return;
+    }
+    const amount = Math.round(logList.clientHeight * 0.75) * dir;
+    logList.scrollTop = Math.max(0, Math.min(
+      logList.scrollHeight - logList.clientHeight,
+      logList.scrollTop + amount
+    ));
+    scheduleThumbUpdate();
+  }
+
+  function jumpLogTo(ratio) {
+    if (!logList) return;
+    ratio = Math.max(0, Math.min(1, ratio));
+    const maxScroll = logList.scrollHeight - logList.clientHeight;
+    if (maxScroll <= 0) return;
+    logList.scrollTop = ratio * maxScroll;
+    scheduleThumbUpdate();
+  }
+
+  function openLogModal() {
+    lastFocusedBeforeModal = document.activeElement;
+    logModal.hidden = false;
+    renderLogs(true);
+    log('打開 Log modal');
+  }
+  function closeLogModal() {
+    if (logModal.hidden) return;
+    logModal.hidden = true;
+    log('關閉 Log modal');
+    if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) {
+      try { lastFocusedBeforeModal.focus(); } catch (e) {}
+    }
+  }
+  function clearLogs() {
+    logBuffer.length = 0;
+    renderedCount = 0;
+    safeWrite(LOG_KEY, { version: 1, updatedAt: new Date().toISOString(), entries: [] });
+    logList.innerHTML = '';
+    logCountEl.textContent = '(0)';
+    pushLog('info', ['Logs 已清空']);
+    renderLogs(true);
+  }
+  async function copyLogs() {
+    const text = logBuffer.map(e =>
+      fmtTime(e.t) + ' ' + fmtLevel(e.level) + ' ' + e.msg
+    ).join('\n');
+    let ok = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text); ok = true;
+      }
+    } catch (e) { warn('clipboard API 失敗', e); }
+    if (!ok) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        ok = document.execCommand('copy'); ta.remove();
+      } catch (e) { warn('execCommand copy 失敗', e); }
+    }
+    copyLogsBtn.textContent = ok ? 'Copied!' : 'Failed';
+    setTimeout(() => { copyLogsBtn.textContent = 'Copy'; }, 1500);
+  }
+
+  /* ============================================================
+     Crash Report Modal
+     ============================================================ */
+  const crashModal     = document.getElementById('crashModal');
+  const crashSubEl     = document.getElementById('crashSub');
+  const crashInfoEl    = document.getElementById('crashInfo');
+  const crashUrlEl     = document.getElementById('crashUrl');
+  const crashLogsEl    = document.getElementById('crashLogs');
+  const crashCloseBtn  = document.getElementById('crashCloseBtn');
+  const crashContinueBtn = document.getElementById('crashContinueBtn');
+
+  function pickCrashLogs(max) {
+    const recent = logBuffer.slice(-30);
+    const pick = new Set();
+    recent.filter(e => e.level === 'warn' || e.level === 'crit')
+          .slice(-max).forEach(e => pick.add(e));
+    for (let i = recent.length - 1; i >= 0 && pick.size < max; i--) pick.add(recent[i]);
+    return Array.from(pick).sort((a, b) => a.t - b.t);
+  }
+  function renderCrashModal() {
+    const hb = previousState || {};
+    const prev = hb.sessionId ? sessions.find(s => s.id === hb.sessionId) : null;
+    crashSubEl.textContent = '偵測於 ' + new Date().toLocaleString() +
+      (hb.ts ? '｜最後存活 ' + new Date(hb.ts).toLocaleString() : '');
+
+    const cells = [];
+    if (prev) {
+      cells.push({ k: '開始時間', v: new Date(prev.startAt).toLocaleString() });
+      cells.push({ k: '持續', v: fmtDuration((prev.endAt || hb.ts || prev.startAt) - prev.startAt) });
+      cells.push({ k: '完成頁數', v: (prev.pagesCompleted || 0) + ' / ' + (prev.totalPages || '?') });
+      cells.push({ k: '循環', v: String(prev.loops || 0) + ' 次' });
+    } else {
+      cells.push({ k: '完成頁數', v: (hb.pagesCompleted || 0) + ' / ' + (hb.totalPages || '?') });
+      cells.push({ k: '循環', v: String(hb.loops || 0) + ' 次' });
+    }
+    cells.push({
+      k: '最後狀態',
+      v: hb.phase || '?',
+      bad: hb.phase === 'loading' || hb.phase === 'countdown'
+    });
+    cells.push({ k: '最後頁碼', v: hb.page ? (hb.page + ' / ' + hb.totalPages) : '?' });
+
+    crashInfoEl.innerHTML = '';
+    cells.forEach(c => {
+      const cell = document.createElement('div');
+      cell.className = 'crash-cell';
+      const k = document.createElement('div'); k.className = 'k'; k.textContent = c.k;
+      const v = document.createElement('div'); v.className = 'v' + (c.bad ? ' bad' : '');
+      v.textContent = c.v;
+      cell.append(k, v);
+      crashInfoEl.appendChild(cell);
+    });
+
+    crashUrlEl.textContent = hb.url || hb.loadingUrl || '（無 URL 記錄）';
+
+    const maxLogs = window.innerHeight >= 600 ? 8 : (window.innerHeight >= 450 ? 6 : 4);
+    const shown = pickCrashLogs(maxLogs);
+    crashLogsEl.innerHTML = '';
+    if (shown.length === 0) {
+      const row = document.createElement('div'); row.className = 'cr';
+      const m = document.createElement('span'); m.className = 'm';
+      m.textContent = '（無日誌記錄）'; row.appendChild(m);
+      crashLogsEl.appendChild(row);
+    } else {
+      shown.forEach(e => {
+        const row = document.createElement('div'); row.className = 'cr ' + e.level;
+        const t = document.createElement('span'); t.className = 't'; t.textContent = fmtTimeShort(e.t);
+        const m = document.createElement('span'); m.className = 'm'; m.textContent = e.msg;
+        row.append(t, m); crashLogsEl.appendChild(row);
+      });
+    }
+    crashContinueBtn.textContent = hb.address ? '繼續播放' : '繼續（用目前設定）';
+  }
+  function openCrashModal() {
+    closeJsonModal();
+    closeLogModal();
+    renderCrashModal();
+    crashModal.hidden = false;
+    log('打開 Crash Report modal');
+  }
+  function closeCrashModal() {
+    if (crashModal.hidden) return;
+    crashModal.hidden = true;
+    log('關閉 Crash Report modal');
+  }
+  function crashContinue() {
+    const hb = previousState || {};
+    if (hb.address) {
+      addressEl.value = hb.address;
+      if (hb.mode && isKnownMode(hb.mode)) pageModeEl.value = hb.mode;
+      if (hb.totalPages) pageCountEl.value = hb.totalPages;
+      if (hb.secondsPerPage) pageTimeEl.value = hb.secondsPerPage;
+      if (typeof hb.loop === 'boolean') loopEl.checked = hb.loop;
+    }
+    refresh();
+    const s = readSettings();
+    if (!s.valid) {
+      setStatus(null, '設定不完整，請檢查後按 Start');
+      closeCrashModal();
+      return;
+    }
+    log('CRASH → 使用者選擇繼續播放');
+    closeCrashModal();
+    setTimeout(start, 80);
+  }
+
+  /* ============================================================
+     事件綁定
+     ============================================================ */
+  [addressEl, pageCountEl, pageTimeEl, pageModeEl, loopEl].forEach(el => {
+    el.addEventListener('input', () => { refresh(); maybePersist(); });
+    el.addEventListener('change', () => { refresh(); maybePersist(); });
+  });
+  rememberEl.addEventListener('change', () => {
+    if (rememberEl.checked) {
+      writeStorage(collectSettings());
+      setStatus(null, '已記住設定');
+    } else {
+      clearStorage();
+      setStatus(null, '已取消記住設定');
+    }
+  });
+  stepBtns.forEach(btn => btn.addEventListener('click', () => {
+    applyStep(btn); maybePersist();
+  }));
+  startBtn.addEventListener('click', start);
+  stopBtn.addEventListener('click', stop);
+
+  cornerStops.forEach(btn => btn.addEventListener('click', stop));
+  cornerPrev.forEach(btn => btn.addEventListener('click', prevPage));
+  cornerNext.forEach(btn => btn.addEventListener('click', nextPage));
+
+  openJsonBtn.addEventListener('click', openJsonModal);
+  closeJsonBtn.addEventListener('click', closeJsonModal);
+  copyJsonBtn.addEventListener('click', copyJson);
+  applyJsonBtn.addEventListener('click', applyJson);
+
+  logBtn.addEventListener('click', openLogModal);
+  closeLogBtn.addEventListener('click', closeLogModal);
+  clearLogsBtn.addEventListener('click', clearLogs);
+  copyLogsBtn.addEventListener('click', copyLogs);
+
+  logTrack.addEventListener('click', e => {
+    const rect = logTrack.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    jumpLogTo(y / rect.height);
+  });
+
+  logList.addEventListener('scroll', scheduleThumbUpdate, { passive: true });
+  logScrollUp.addEventListener('click', () => scrollLogBy(-1));
+  logScrollDown.addEventListener('click', () => scrollLogBy(1));
+  window.addEventListener('resize', scheduleThumbUpdate);
+
+  crashCloseBtn.addEventListener('click', closeCrashModal);
+  crashContinueBtn.addEventListener('click', crashContinue);
+
+  document.addEventListener('keydown', e => {
+    const code = e.keyCode || e.which || 0;
+    const key  = e.key || '';
+
+    if (!jsonModal.hidden) {
+      if (key === 'Escape' || code === 27) { e.preventDefault(); closeJsonModal(); }
+      return;
+    }
+    if (!logModal.hidden) {
+      if (key === 'Escape' || code === 27 || code === 8) {
+        e.preventDefault(); closeLogModal(); return;
+      }
+      if (key === 'ArrowUp'    || code === 38) { e.preventDefault(); scrollLogBy(-1); return; }
+      if (key === 'ArrowDown'  || code === 40) { e.preventDefault(); scrollLogBy(1);  return; }
+      if (key === 'ArrowLeft'  || code === 37) { e.preventDefault(); scrollLogBy(-3); return; }
+      if (key === 'ArrowRight' || code === 39) { e.preventDefault(); scrollLogBy(3);  return; }
+      if (key === 'PageUp'     || code === 33) { e.preventDefault(); scrollLogBy(-3); return; }
+      if (key === 'PageDown'   || code === 34) { e.preventDefault(); scrollLogBy(3);  return; }
+      if (code >= 48 && code <= 57) {
+        e.preventDefault();
+        const num = code - 48;
+        jumpLogTo(num === 0 ? 1 : num / 10);
+        return;
+      }
+      return;
+    }
+    if (!crashModal.hidden) {
+      if (key === 'Escape' || code === 27) { e.preventDefault(); closeCrashModal(); }
+      return;
+    }
+    if (!state) return;
+    if (key === 'Escape' || key === 'Esc' || key === 'MediaStop' || code === 27) {
+      e.preventDefault();
+      stop();
+    }
+  });
+
+  document.getElementById('settingsForm').addEventListener('submit', e => {
+    e.preventDefault();
+    start();
+  });
+
+  /* ============================================================
+     初始化
+     ============================================================ */
+  const stored = readStorage();
+  if (stored && stored.remember) {
+    applyStoredSettings(stored);
+    log('已還原記住嘅設定');
+  } else if (stored) {
+    clearStorage();
+  }
+
+  const prevResult = detectPreviousCrash();
+  refresh();
+  flushLogs();
+  flushSessions();
+  startHeartbeat();
+  writeHeartbeat('idle');
+
+  if (prevResult === 'crash' || prevResult === 'reload') {
+    setTimeout(openCrashModal, 600);
+  }
+
+  log('頁面載入完成，等待操作');
+})();
+</script>
+</body>
+</html>
