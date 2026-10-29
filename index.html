@@ -27,6 +27,7 @@
     --fs-checkbox:        clamp(12px, 1.6vmin, 3.2vmin);
     --fs-checkbox-small:  clamp(10px, 1.2vmin, 2.4vmin);
     --fs-code:            clamp(11px, 1.5vmin, 2.9vmin);
+    --fs-start:           clamp(16px, 2.2vmin, 4.2vmin);
 
     --gap-xs: clamp(2px, 0.4vmin, 0.8vmin);
     --gap-sm: clamp(3px, 0.6vmin, 1.2vmin);
@@ -34,9 +35,6 @@
     --gap-lg: clamp(8px, 1.4vmin, 2.8vmin);
     --gap-xl: clamp(12px, 2vmin, 4vmin);
 
-    --body-pad:      clamp(6px, 1.2vmin, 2.4vmin);
-    --app-pad-v:     clamp(12px, 2vmin, 4vmin);
-    --app-pad-h:     clamp(16px, 2.5vmin, 5vmin);
     --input-pad-v:   clamp(7px, 1.1vmin, 2.2vmin);
     --input-pad-h:   clamp(8px, 1.2vmin, 2.4vmin);
     --summary-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
@@ -52,8 +50,8 @@
     --step-btn-w:    clamp(46px, 6vmin, 12vmin);
     --step-btn-h:    clamp(42px, 5.5vmin, 11vmin);
     --checkbox-size: clamp(18px, 2.4vmin, 4.8vmin);
-    --action-min-w:  clamp(110px, 14vmin, 28vmin);
     --corner-size:   clamp(64px, 10vmin, 20vmin);
+    --header-h:      clamp(64px, 8.5vmin, 120px);
   }
 
   * { box-sizing: border-box; }
@@ -61,39 +59,47 @@
 
   body {
     margin: 0;
-    padding: var(--body-pad);
+    padding: 0;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                  Helvetica, Arial, sans-serif;
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+    background: #fff;
     color: var(--text);
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
   }
 
   .app {
-    min-height: calc(100vh - 2 * var(--body-pad));
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-md);
-    padding: var(--app-pad-v) var(--app-pad-h);
+    gap: 0;
+    padding: 0;
     background: #fff;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
   }
 
+  /* ============================================================
+     Header
+     ============================================================ */
   .app-header {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--gap-md);
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+    min-height: var(--header-h);
+    border-bottom: 1px solid var(--border);
     min-width: 0;
   }
+
   .app-header-text {
     flex: 1 1 auto;
+    order: 2;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: var(--gap-xs);
+    padding: var(--gap-sm) var(--gap-md);
     min-width: 0;
   }
   h1 {
@@ -110,45 +116,113 @@
 
   .header-actions {
     flex: 0 0 auto;
+    order: 3;
     display: flex;
-    gap: var(--gap-md);
+    gap: 0;
     align-items: stretch;
+    flex-wrap: wrap;
   }
-  .header-btn {
-    flex: 0 0 auto;
+
+  .header-btn,
+  #stopBtn,
+  #startBtn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(3px, 0.5vmin, 8px);
-    padding: var(--input-pad-v) clamp(10px, 1.8vmin, 2.4vmin);
-    font-size: var(--fs-btn);
-    font-weight: 700;
     font-family: inherit;
-    color: var(--accent);
-    background: var(--stepper-bg);
-    border: 2px solid var(--border);
-    border-radius: var(--radius-md);
+    border: 0;
+    border-radius: 0;
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
     white-space: nowrap;
-    transition: background-color .12s, color .12s, border-color .12s, box-shadow .12s;
+    transition: background .12s, color .12s, box-shadow .12s;
   }
+
+  .header-btn {
+    flex: 0 0 auto;
+    padding: 0 clamp(14px, 2.2vmin, 32px);
+    font-size: var(--fs-btn);
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--stepper-bg);
+    border-left: 1px solid var(--border);
+  }
+  .header-btn:hover:not(:disabled) { background: #e0e7ff; }
   .header-btn:focus {
     color: #fff;
     background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .3);
   }
-  .header-btn:active { background: var(--accent-dark); color: #fff; }
 
+  #stopBtn {
+    flex: 0 0 auto;
+    min-width: clamp(80px, 10vmin, 140px);
+    padding: 0 clamp(16px, 2.4vmin, 36px);
+    font-size: var(--fs-btn);
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-left: 1px solid #b91c1c;
+  }
+  #stopBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  #stopBtn:focus {
+    background: #b91c1c;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .4);
+  }
+  #stopBtn:active:not(:disabled) {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+  #stopBtn:disabled {
+    opacity: .35;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border-left-color: var(--border);
+    cursor: not-allowed;
+    filter: grayscale(.5);
+  }
+
+  #startBtn {
+    flex: 0 0 auto;
+    order: 1;
+    min-width: clamp(140px, 19vmin, 260px);
+    padding: 0 clamp(20px, 3vmin, 52px);
+    font-size: var(--fs-start);
+    font-weight: 800;
+    letter-spacing: .01em;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-right: 1px solid var(--accent-dark);
+    border-left: 0;
+  }
+  #startBtn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  }
+  #startBtn:focus {
+    background: var(--accent-dark);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .35);
+  }
+  #startBtn:active:not(:disabled) {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+  #startBtn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+  }
+
+  /* ---------- Settings Grid ---------- */
   .settings-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     gap: var(--gap-lg) var(--gap-xl);
     align-items: start;
     align-content: start;
+    padding: var(--gap-lg) var(--gap-md);
     min-width: 0;
+    flex: 0 0 auto;
   }
   .field {
     display: flex;
@@ -331,6 +405,7 @@
 
   .summary {
     padding: var(--summary-pad-v) var(--summary-pad-h);
+    margin: 0 var(--gap-md);
     font-size: var(--fs-summary);
     line-height: 1.5;
     color: #3730a3;
@@ -345,56 +420,18 @@
     background: #fef2f2;
   }
 
-  .actions {
-    display: flex;
-    align-items: stretch;
-    flex-wrap: wrap;
-    gap: var(--gap-lg);
+  .status-bar {
     margin-top: auto;
-    min-width: 0;
-  }
-  button.action {
-    flex: 0 1 var(--action-min-w);
-    min-width: 90px;
-    padding: var(--input-pad-v) var(--input-pad-h);
-    font-size: var(--fs-btn);
-    font-weight: 700;
-    font-family: inherit;
-    color: #fff;
-    background: var(--accent);
-    border: 2px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: background-color .15s, box-shadow .15s;
-  }
-  button.action.secondary {
-    color: #334155;
+    padding: var(--gap-md);
+    border-top: 1px solid var(--border);
     background: #fff;
-    border-color: var(--border);
-  }
-  button.action.primary:focus {
-    background: var(--accent-dark);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
-  }
-  button.action.secondary:focus {
-    background: #f1f5f9;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .25);
-  }
-  button.action:disabled {
-    opacity: .45;
-    cursor: not-allowed;
-    box-shadow: none;
   }
 
   .status {
-    flex: 1 1 clamp(180px, 20vmin, 40vmin);
-    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: clamp(48px, 6vmin, 80px);
     padding: var(--summary-pad-v) var(--summary-pad-h);
     font-size: var(--fs-status);
     font-weight: 600;
@@ -436,6 +473,9 @@
     background: #fff;
   }
 
+  /* ============================================================
+     四角熱區
+     ============================================================ */
   .corner-stop {
     position: fixed;
     width: var(--corner-size);
@@ -444,126 +484,183 @@
     z-index: 9999;
     background: transparent;
     border: 0;
-    border-radius: var(--radius-xl);
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color .12s, box-shadow .12s;
   }
   body.viewing .corner-stop { display: block; }
-  .corner-stop:focus {
+
+  .corner-stop[data-stop]:focus {
     background: rgba(220, 38, 38, .22);
     box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
                 0 6px 22px rgba(0, 0, 0, .45);
   }
-  .corner-stop:active { background: rgba(220, 38, 38, .55); }
-  .corner-stop.tl { top: 0;    left: 0;  }
+  .corner-stop[data-stop]:active { background: rgba(220, 38, 38, .55); }
+
+  .corner-stop[data-prev]:focus {
+    background: rgba(245, 158, 11, .35);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop[data-prev]:active { background: rgba(245, 158, 11, .65); }
+
+  .corner-stop[data-next]:focus {
+    background: rgba(34, 197, 94, .35);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
+                0 6px 22px rgba(0, 0, 0, .45);
+  }
+  .corner-stop[data-next]:active { background: rgba(34, 197, 94, .65); }
+
   .corner-stop.tr { top: 0;    right: 0; }
   .corner-stop.bl { bottom: 0; left: 0;  }
   .corner-stop.br { bottom: 0; right: 0; }
 
   /* ============================================================
-     Modal 共通（無 backdrop-filter，小 box-shadow）
+     Modal 全屏
      ============================================================ */
   .modal {
     position: fixed;
     inset: 0;
     z-index: 10000;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--gap-lg);
   }
   .modal[hidden] { display: none; }
 
-  .modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, .72);
-  }
-
   .modal-panel {
-    position: relative;
-    width: min(720px, 100%);
-    max-height: calc(100vh - 2 * var(--gap-lg));
+    width: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-md);
-    padding: var(--app-pad-v) var(--app-pad-h);
+    gap: 0;
+    padding: 0;
     background: #fff;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, .45);
     overflow: hidden;
   }
 
   .modal-header {
+    flex: 0 0 auto;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+    min-height: var(--header-h);
+    border-bottom: 1px solid var(--border);
+    min-width: 0;
   }
-  .modal-header h2 {
+
+  .modal-title {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--gap-xs);
+    padding: var(--gap-sm) var(--gap-md);
+    min-width: 0;
+  }
+  .modal-title h2 {
     margin: 0;
     font-size: var(--fs-h1);
     letter-spacing: -.02em;
   }
-  .modal-close {
+
+  .modal-hint {
+    font-size: var(--fs-hint);
+    line-height: 1.3;
+    color: var(--muted);
+    word-break: break-word;
+  }
+
+  .modal-actions {
     flex: 0 0 auto;
-    width: var(--step-btn-w);
-    height: var(--step-btn-h);
     display: flex;
+    gap: 0;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  /* Modal 按鈕：貼邊、無圓角 */
+  .modal-btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--fs-step);
+    padding: 0 clamp(14px, 2.2vmin, 32px);
+    font-size: var(--fs-btn);
     font-weight: 700;
-    color: #334155;
-    background: #f8fafc;
-    border: 2px solid var(--border);
-    border-radius: var(--radius-xl);
+    font-family: inherit;
+    border: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    transition: background-color .12s, color .12s, border-color .12s, box-shadow .12s;
+    white-space: nowrap;
+    transition: background .12s, color .12s, box-shadow .12s;
   }
-  .modal-close:focus {
+
+  .modal-btn.secondary {
+    color: var(--accent);
+    background: var(--stepper-bg);
+  }
+  .modal-btn.secondary:hover { background: #e0e7ff; }
+  .modal-btn.secondary:focus {
     color: #fff;
     background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .3);
+  }
+  .modal-btn.secondary:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .1);
+  }
+
+  .modal-btn.primary {
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-left: 1px solid var(--accent-dark);
+  }
+  .modal-btn.primary:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  }
+  .modal-btn.primary:focus {
+    background: var(--accent-dark);
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .35);
+  }
+  .modal-btn.primary:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
+  }
+
+  .modal-btn.danger {
+    color: #fff;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-left: 1px solid #b91c1c;
+    font-size: clamp(20px, 2.8vmin, 40px);
+    font-weight: 700;
+    min-width: clamp(56px, 7vmin, 100px);
+    padding: 0;
+    line-height: 1;
+  }
+  .modal-btn.danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  .modal-btn.danger:focus {
+    background: #b91c1c;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .4);
+  }
+  .modal-btn.danger:active {
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, .15);
   }
 
   .modal-body {
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
-    flex: 1 1 auto;
+    padding: var(--gap-md);
     min-height: 0;
-  }
-
-  #jsonText {
-    width: 100%;
-    min-height: clamp(180px, 40vmin, 480px);
-    max-height: 60vh;
-    padding: var(--input-pad-v) var(--input-pad-h);
-    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-    font-size: var(--fs-code);
-    line-height: 1.5;
-    color: var(--text);
-    background: #f8fafc;
-    border: 2px solid var(--border);
-    border-radius: var(--radius-md);
-    outline: none;
-    resize: vertical;
-    tab-size: 2;
-    transition: border-color .15s, box-shadow .15s, background .15s;
-  }
-  #jsonText:focus {
-    background: #fff;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
+    overflow: hidden;
   }
 
   .modal-msg {
+    flex: 0 0 auto;
     font-size: var(--fs-hint);
     line-height: 1.4;
     padding: var(--gap-sm) var(--gap-md);
@@ -574,44 +671,34 @@
   .modal-msg.error   { color: var(--danger); background: #fef2f2; }
   .modal-msg.success { color: #065f46;      background: #ecfdf5; }
 
-  .modal-actions {
-    display: flex;
-    gap: var(--gap-md);
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-  .modal-actions button {
-    flex: 0 1 auto;
-    min-width: 100px;
+  /* ============================================================
+     JSON Modal
+     ============================================================ */
+  #jsonText {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
     padding: var(--input-pad-v) var(--input-pad-h);
-    font-size: var(--fs-btn);
-    font-weight: 700;
-    font-family: inherit;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: var(--fs-code);
+    line-height: 1.5;
+    color: var(--text);
+    background: #f8fafc;
+    border: 2px solid var(--border);
     border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    cursor: pointer;
     outline: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: background-color .15s, box-shadow .15s, border-color .15s;
+    resize: none;
+    tab-size: 2;
+    transition: border-color .15s, box-shadow .15s, background .15s;
   }
-  .modal-actions .btn-primary {
-    color: #fff; background: var(--accent);
-  }
-  .modal-actions .btn-primary:focus {
-    background: var(--accent-dark);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
-  }
-  .modal-actions .btn-secondary {
-    color: #334155; background: #fff; border-color: var(--border);
-  }
-  .modal-actions .btn-secondary:focus {
-    background: #f1f5f9;
+  #jsonText:focus {
+    background: #fff;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .25);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
   }
 
   /* ============================================================
-     Log Modal（含自訂滾動條，click 跳轉，無 drag / hover）
+     Log Modal
      ============================================================ */
   .log-count {
     font-size: var(--fs-sub);
@@ -619,7 +706,9 @@
     color: var(--muted);
     margin-left: var(--gap-sm);
   }
+
   .log-session {
+    flex: 0 0 auto;
     padding: var(--summary-pad-v) var(--summary-pad-h);
     font-size: var(--fs-summary);
     line-height: 1.5;
@@ -638,13 +727,11 @@
 
   .log-body {
     flex: 1 1 auto;
-    min-height: clamp(160px, 36vmin, 420px);
-    max-height: 55vh;
+    min-height: 0;
     display: flex;
     gap: 6px;
     overflow: hidden;
   }
-
   .log-list {
     flex: 1 1 auto;
     min-width: 0;
@@ -673,41 +760,9 @@
     left: 0; right: 0; top: 0;
     background: #6366f1;
     min-height: 24px;
-    pointer-events: none;         /* thumb 純視覺，所有 click 落到 track */
+    pointer-events: none;
   }
 
-  .log-scroll-controls {
-    display: flex;
-    gap: var(--gap-md);
-  }
-  .log-scroll-btn {
-    flex: 1 1 0;
-    min-height: clamp(42px, 5.5vmin, 11vmin);
-    padding: var(--input-pad-v) var(--input-pad-h);
-    font-size: var(--fs-btn);
-    font-weight: 700;
-    font-family: inherit;
-    color: var(--accent);
-    background: var(--stepper-bg);
-    border: 2px solid var(--border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-  .log-scroll-btn:focus {
-    color: #fff;
-    background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
-  }
-  .log-scroll-btn:active {
-    background: var(--accent-dark);
-    color: #fff;
-  }
-
-  /* 每條 log 1 個節點 */
   .log-entry {
     padding: 2px 0;
     border-bottom: 1px solid rgba(255, 255, 255, .06);
@@ -721,35 +776,33 @@
   /* ============================================================
      Crash Report Modal
      ============================================================ */
-  .crash-panel {
-    width: min(960px, 100%);
-    max-height: calc(100vh - 2 * var(--gap-md));
-    gap: var(--gap-sm);
-    padding: var(--app-pad-v) var(--app-pad-h);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .crash-head {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-bottom: var(--gap-sm);
+  .modal-header.crash-header {
     border-bottom: 2px solid #fecaca;
   }
-  .crash-title {
-    margin: 0;
-    font-size: clamp(16px, 2.4vmin, 4.5vmin);
-    font-weight: 800;
+  .modal-title .crash-title {
     color: var(--danger);
+    font-weight: 800;
+    font-size: clamp(16px, 2.4vmin, 4.5vmin);
     letter-spacing: -.02em;
   }
-  .crash-sub {
+  .modal-title .crash-sub {
     font-size: var(--fs-sub);
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
+
+  .crash-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--gap-md);
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .crash-info {
+    flex: 0 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: var(--gap-sm);
@@ -779,6 +832,7 @@
   .crash-cell .v.bad { color: var(--danger); }
 
   .crash-url {
+    flex: 0 0 auto;
     padding: var(--gap-sm) var(--gap-md);
     font-family: ui-monospace, Menlo, monospace;
     font-size: var(--fs-code);
@@ -803,6 +857,7 @@
     overflow: hidden;
   }
   .crash-logs-title {
+    flex: 0 0 auto;
     font-size: var(--fs-hint);
     font-weight: 700;
     color: var(--muted);
@@ -833,60 +888,77 @@
   .crash-logs .cr.warn .m { color: #fbbf24; }
   .crash-logs .cr.crit .m { color: #f87171; }
 
-  .crash-actions {
-    display: flex;
-    gap: var(--gap-md);
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    padding-top: var(--gap-sm);
-    border-top: 1px solid var(--border);
-  }
-  .crash-actions button {
-    flex: 0 1 auto;
-    min-width: 140px;
-    padding: var(--input-pad-v) var(--input-pad-h);
-    font-size: var(--fs-btn);
-    font-weight: 700;
-    font-family: inherit;
-    border-radius: var(--radius-md);
-    border: 2px solid transparent;
-    cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .crash-actions .btn-secondary {
-    color: #334155; background: #fff; border-color: var(--border);
-  }
-  .crash-actions .btn-secondary:focus {
-    background: #f1f5f9;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .25);
-  }
-  .crash-actions .btn-primary {
-    color: #fff; background: var(--accent);
-  }
-  .crash-actions .btn-primary:focus {
-    background: var(--accent-dark);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, .35);
-  }
-
-  /* ---------- 響應式 ---------- */
+  /* ============================================================
+     響應式
+     ============================================================ */
   @media (max-width: 1000px) {
     .settings-grid { grid-template-columns: 1fr; }
     .address-field,
     .loop-field,
     .remember-field { grid-column: auto; }
   }
+
+  @media (max-width: 900px) {
+    .app-header {
+      min-height: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #startBtn {
+      order: 1;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: clamp(60px, 7.5vmin, 100px);
+      border-right: 0;
+      border-bottom: 1px solid var(--accent-dark);
+    }
+    .app-header-text {
+      order: 2;
+      width: 100%;
+      flex: 1 1 auto;
+    }
+    .header-actions {
+      order: 3;
+      width: 100%;
+      border-top: 1px solid var(--border);
+    }
+    .header-btn,
+    #stopBtn {
+      flex: 1 1 0;
+      min-height: clamp(48px, 6vmin, 80px);
+      border-left: 1px solid var(--border);
+    }
+    .header-btn:first-child { border-left: 0; }
+    #stopBtn { border-left: 1px solid #b91c1c; }
+
+    .modal-header {
+      min-height: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .modal-title {
+      width: 100%;
+      flex: 0 0 auto;
+    }
+    .modal-actions {
+      width: 100%;
+      border-top: 1px solid var(--border);
+    }
+    .modal-btn {
+      flex: 1 1 0;
+      min-height: clamp(48px, 6vmin, 80px);
+    }
+    .modal-btn.danger {
+      flex: 0 0 auto;
+      min-width: clamp(56px, 12vmin, 100px);
+    }
+  }
+
   @media (max-width: 560px) {
     .stepper input { flex: 1 1 100%; min-width: 0; }
     .btn-group { flex: 1 1 auto; }
     .btn-group + .btn-group { padding-left: 0; border-left: 0; }
     .step-btn { flex: 1; width: auto; }
-    .app-header { flex-wrap: wrap; }
-    .header-actions { width: 100%; }
-    .header-actions .header-btn { flex: 1 1 0; }
-    .modal-actions button { flex: 1 1 100%; }
-    .crash-actions button { flex: 1 1 100%; }
   }
   @media (max-height: 720px) {
     .hint { display: none; }
@@ -904,20 +976,24 @@
 
   <div class="app">
     <header class="app-header">
+      <button type="button" id="startBtn">▶ START</button>
+
       <div class="app-header-text">
         <h1>Page Rotation Setup</h1>
         <p class="sub">
-          輸入基礎網址、選擇翻頁方式、頁數及每頁時間。按 Start 後以全螢幕 iframe 顯示，
-          每頁載入完成後才開始倒數。播放期間可按畫面任何一個角落停止（或按 Esc）。
+          輸入基礎網址、選擇翻頁方式、頁數及每頁時間。按左上角 ▶ START 開始，
+          播放期間：右上角停止、左下角上一頁、右下角下一頁（或按 Esc 停止）。
         </p>
       </div>
+
       <div class="header-actions">
-        <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">
-          { } JSON
-        </button>
         <button type="button" class="header-btn" id="logBtn" aria-haspopup="dialog">
           Log
         </button>
+        <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">
+          { } JSON
+        </button>
+        <button type="button" id="stopBtn" disabled>STOP</button>
       </div>
     </header>
 
@@ -997,40 +1073,47 @@
 
     <div class="summary" id="summary"></div>
 
-    <div class="actions">
-      <button type="button" class="action primary" id="startBtn">Start</button>
-      <button type="button" class="action secondary" id="stopBtn" disabled>Stop</button>
+    <div class="status-bar">
       <div class="status" id="status">Ready</div>
     </div>
   </div>
 
   <!-- JSON Modal -->
   <div class="modal" id="jsonModal" hidden role="dialog" aria-modal="true" aria-labelledby="jsonModalTitle">
-    <div class="modal-backdrop" data-close-json></div>
     <div class="modal-panel">
       <div class="modal-header">
-        <h2 id="jsonModalTitle">Settings JSON</h2>
-        <button type="button" class="modal-close" id="closeJsonBtn" aria-label="關閉">×</button>
+        <div class="modal-title">
+          <h2 id="jsonModalTitle">Settings JSON</h2>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="copyJsonBtn">Copy</button>
+          <button type="button" class="modal-btn primary"   id="applyJsonBtn">Apply</button>
+          <button type="button" class="modal-btn danger"    id="closeJsonBtn" aria-label="關閉">×</button>
+        </div>
       </div>
       <div class="modal-body">
         <textarea id="jsonText" spellcheck="false" autocomplete="off"
                   aria-label="Settings JSON"></textarea>
         <div class="modal-msg" id="jsonMsg" hidden></div>
       </div>
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="copyJsonBtn">Copy to clipboard</button>
-        <button type="button" class="btn-primary"   id="applyJsonBtn">Apply</button>
-      </div>
     </div>
   </div>
 
-  <!-- Log Modal -->
+  <!-- Log Modal（所有按鈕在頂部：▲▼ / Clear / Copy / ×） -->
   <div class="modal" id="logModal" hidden role="dialog" aria-modal="true" aria-labelledby="logModalTitle">
-    <div class="modal-backdrop" data-close-log></div>
     <div class="modal-panel">
       <div class="modal-header">
-        <h2 id="logModalTitle">Logs <span class="log-count" id="logCount">(0)</span></h2>
-        <button type="button" class="modal-close" id="closeLogBtn" aria-label="關閉">×</button>
+        <div class="modal-title">
+          <h2 id="logModalTitle">Logs <span class="log-count" id="logCount">(0)</span></h2>
+          <div class="modal-hint">↑/↓ 小步 · ←/→ 大步 · 數字 1-9 跳到 10%-90% · 0 跳到底 · 點右側滾動條即跳轉 · Esc 關閉</div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="logScrollUp"   aria-label="向上滾動">▲ 向上</button>
+          <button type="button" class="modal-btn secondary" id="logScrollDown" aria-label="向下滾動">▼ 向下</button>
+          <button type="button" class="modal-btn secondary" id="clearLogsBtn">Clear</button>
+          <button type="button" class="modal-btn secondary" id="copyLogsBtn">Copy</button>
+          <button type="button" class="modal-btn danger"    id="closeLogBtn" aria-label="關閉">×</button>
+        </div>
       </div>
       <div class="modal-body">
         <div class="log-session" id="logSession" hidden></div>
@@ -1040,48 +1123,38 @@
             <div class="log-thumb" id="logThumb"></div>
           </div>
         </div>
-        <div class="log-scroll-controls">
-          <button type="button" class="log-scroll-btn" id="logScrollUp"   aria-label="向上滾動">▲ 向上</button>
-          <button type="button" class="log-scroll-btn" id="logScrollDown" aria-label="向下滾動">▼ 向下</button>
-        </div>
-        <div class="hint" style="text-align:center;margin:0;">
-          ↑/↓ 小步　·　←/→ 大步　·　數字 1-9 跳到 10%-90%　·　0 跳到底　·　點右側滾動條即跳轉　·　Esc 關閉
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" id="clearLogsBtn">Clear</button>
-        <button type="button" class="btn-secondary" id="copyLogsBtn">Copy</button>
-        <button type="button" class="btn-primary"   id="closeLogBtn2">Close</button>
       </div>
     </div>
   </div>
 
   <!-- Crash Report Modal -->
   <div class="modal" id="crashModal" hidden role="dialog" aria-modal="true" aria-labelledby="crashTitle">
-    <div class="modal-backdrop"></div>
-    <div class="modal-panel crash-panel">
-      <div class="crash-head">
-        <h2 class="crash-title" id="crashTitle">⚠️ 偵測到上次異常結束</h2>
-        <div class="crash-sub" id="crashSub"></div>
+    <div class="modal-panel">
+      <div class="modal-header crash-header">
+        <div class="modal-title">
+          <h2 class="crash-title" id="crashTitle">⚠️ 偵測到上次異常結束</h2>
+          <div class="crash-sub" id="crashSub"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn secondary" id="crashCloseBtn">關閉（留在設定頁）</button>
+          <button type="button" class="modal-btn primary"   id="crashContinueBtn">繼續播放</button>
+        </div>
       </div>
-      <div class="crash-info" id="crashInfo"></div>
-      <div class="crash-url" id="crashUrl"></div>
-      <div class="crash-logs-wrap">
-        <div class="crash-logs-title">最後日誌（warn / error 優先）</div>
-        <div class="crash-logs" id="crashLogs"></div>
-      </div>
-      <div class="crash-actions">
-        <button type="button" class="btn-secondary" id="crashCloseBtn">關閉（留在設定頁）</button>
-        <button type="button" class="btn-primary"   id="crashContinueBtn">繼續播放</button>
+      <div class="crash-body">
+        <div class="crash-info" id="crashInfo"></div>
+        <div class="crash-url" id="crashUrl"></div>
+        <div class="crash-logs-wrap">
+          <div class="crash-logs-title">最後日誌（warn / error 優先）</div>
+          <div class="crash-logs" id="crashLogs"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 四角停止熱區 -->
-  <button type="button" class="corner-stop tl" data-stop aria-label="停止"></button>
+  <!-- 四角熱區 -->
   <button type="button" class="corner-stop tr" data-stop aria-label="停止"></button>
-  <button type="button" class="corner-stop bl" data-stop aria-label="停止"></button>
-  <button type="button" class="corner-stop br" data-stop aria-label="停止"></button>
+  <button type="button" class="corner-stop bl" data-prev aria-label="上一頁"></button>
+  <button type="button" class="corner-stop br" data-next aria-label="下一頁"></button>
 
 <script>
 (function () {
@@ -1093,7 +1166,7 @@
   const HEARTBEAT_KEY = 'pageRot.heartbeat.v1';
   const TAB_KEY       = 'pageRot.tab.v1';
 
-  const LOG_MAX        = 250;   /* 存储 & 渲染共 250 条 */
+  const LOG_MAX        = 250;
   const SESSION_MAX    = 30;
   const FLUSH_DEBOUNCE = 300;
   const HB_INTERVAL    = 10000;
@@ -1297,6 +1370,8 @@
   const summaryEl   = document.getElementById('summary');
   const statusEl    = document.getElementById('status');
   const cornerStops = Array.from(document.querySelectorAll('[data-stop]'));
+  const cornerPrev  = Array.from(document.querySelectorAll('[data-prev]'));
+  const cornerNext  = Array.from(document.querySelectorAll('[data-next]'));
   const stepBtns    = Array.from(document.querySelectorAll('.step-btn'));
 
   const openJsonBtn  = document.getElementById('openJsonBtn');
@@ -1551,6 +1626,32 @@
     }
     loadPage(state.page + 1);
   }
+
+  function prevPage() {
+    if (!state) return;
+    log('PREV page', { from: state.page });
+    if (state.page > 1) {
+      loadPage(state.page - 1);
+    } else if (state.loop) {
+      loadPage(state.totalPages);
+    } else {
+      log('→ 已在第 1 頁，重啟當前頁倒數');
+      beginCountdown();
+    }
+  }
+  function nextPage() {
+    if (!state) return;
+    log('NEXT page', { from: state.page });
+    if (state.page < state.totalPages) {
+      loadPage(state.page + 1);
+    } else if (state.loop) {
+      loadPage(1);
+    } else {
+      log('全部頁面完成（手動跳過）');
+      finish();
+    }
+  }
+
   function start() {
     const s = readSettings();
     if (!s.valid || state) return;
@@ -1692,10 +1793,6 @@
 
   /* ============================================================
      Log Modal
-     - 每條 log 1 個 DOM 節點
-     - 無定時器
-     - Track 單擊跳轉（無 drag / hover / long-press）
-     - 數字鍵 1-9 / 0 快速跳轉
      ============================================================ */
   const logBtn          = document.getElementById('logBtn');
   const logModal        = document.getElementById('logModal');
@@ -1703,7 +1800,6 @@
   const logCountEl      = document.getElementById('logCount');
   const logSessionEl    = document.getElementById('logSession');
   const closeLogBtn     = document.getElementById('closeLogBtn');
-  const closeLogBtn2    = document.getElementById('closeLogBtn2');
   const clearLogsBtn    = document.getElementById('clearLogsBtn');
   const copyLogsBtn     = document.getElementById('copyLogsBtn');
   const logTrack        = document.getElementById('logTrack');
@@ -1768,7 +1864,6 @@
     logSessionEl.textContent = lines.join('\n');
   }
 
-  /* rAF 節流更新 thumb */
   function updateLogThumbNow() {
     thumbRafId = null;
     if (!logList || !logTrack || !logThumb) return;
@@ -1832,7 +1927,6 @@
     scheduleThumbUpdate();
   }
 
-  /* 跳到指定比例：0 = 頂，1 = 底 */
   function jumpLogTo(ratio) {
     if (!logList) return;
     ratio = Math.max(0, Math.min(1, ratio));
@@ -2014,33 +2108,27 @@
   }));
   startBtn.addEventListener('click', start);
   stopBtn.addEventListener('click', stop);
+
   cornerStops.forEach(btn => btn.addEventListener('click', stop));
+  cornerPrev.forEach(btn => btn.addEventListener('click', prevPage));
+  cornerNext.forEach(btn => btn.addEventListener('click', nextPage));
 
   openJsonBtn.addEventListener('click', openJsonModal);
   closeJsonBtn.addEventListener('click', closeJsonModal);
   copyJsonBtn.addEventListener('click', copyJson);
   applyJsonBtn.addEventListener('click', applyJson);
-  jsonModal.addEventListener('click', e => {
-    if (e.target.matches('[data-close-json]')) closeJsonModal();
-  });
 
   logBtn.addEventListener('click', openLogModal);
   closeLogBtn.addEventListener('click', closeLogModal);
-  closeLogBtn2.addEventListener('click', closeLogModal);
   clearLogsBtn.addEventListener('click', clearLogs);
   copyLogsBtn.addEventListener('click', copyLogs);
-  logModal.addEventListener('click', e => {
-    if (e.target.matches('[data-close-log]')) closeLogModal();
-  });
 
-  /* Track 單擊 → 即刻跳到該比例位置 */
   logTrack.addEventListener('click', e => {
     const rect = logTrack.getBoundingClientRect();
     const y = e.clientY - rect.top;
     jumpLogTo(y / rect.height);
   });
 
-  /* 滾動條相關 */
   logList.addEventListener('scroll', scheduleThumbUpdate, { passive: true });
   logScrollUp.addEventListener('click', () => scrollLogBy(-1));
   logScrollDown.addEventListener('click', () => scrollLogBy(1));
@@ -2049,7 +2137,6 @@
   crashCloseBtn.addEventListener('click', closeCrashModal);
   crashContinueBtn.addEventListener('click', crashContinue);
 
-  /* ---- 鍵盤 / 遙控器（無需 focus，直接監聽全域 keydown） ---- */
   document.addEventListener('keydown', e => {
     const code = e.keyCode || e.which || 0;
     const key  = e.key || '';
@@ -2068,7 +2155,6 @@
       if (key === 'ArrowRight' || code === 39) { e.preventDefault(); scrollLogBy(3);  return; }
       if (key === 'PageUp'     || code === 33) { e.preventDefault(); scrollLogBy(-3); return; }
       if (key === 'PageDown'   || code === 34) { e.preventDefault(); scrollLogBy(3);  return; }
-      /* 數字鍵：1-9 跳到 10%-90%，0 跳到底 */
       if (code >= 48 && code <= 57) {
         e.preventDefault();
         const num = code - 48;
