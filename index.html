@@ -1152,6 +1152,27 @@
   const CRASH_GAP_MS   = 30000;
   const AUTO_START_DELAY = 5000;
 
+  /* ============================================================
+     Log 分類（用於 crash 判定）
+     ============================================================ */
+  const PLAYING_LOG_PREFIXES = [
+    'loadPage',
+    'beginCountdown',
+    'iframe load event',
+    'countdown 完結',
+    '進度',
+    '循環 →',
+    'PREV page',
+    'NEXT page'
+  ];
+  const STOP_LOG_PREFIXES = [
+    'STOP',
+    'FINISH',
+    'SESSION 結束',
+    'resetControls',
+    '全部頁面完成'
+  ];
+
   let logBuffer      = [];
   let sessions       = [];
   let flushTimer     = null;
@@ -1262,9 +1283,50 @@
     if (hbTimer) { clearInterval(hbTimer); hbTimer = null; }
   }
 
+  /* ============================================================
+     Crash 判定：從 log + heartbeat 雙重確認
+     ============================================================ */
+
+  /* 找 last session 開始之後的最後一條關鍵 log */
+  function findLastKeyLogSince(ts) {
+    for (let i = logBuffer.length - 1; i >= 0; i--) {
+      if (logBuffer[i].t < ts) break;
+      const msg = logBuffer[i].msg || '';
+      for (const p of PLAYING_LOG_PREFIXES) {
+        if (msg.indexOf(p) === 0) {
+          return { log: logBuffer[i], kind: 'playing' };
+        }
+      }
+      for (const p of STOP_LOG_PREFIXES) {
+        if (msg.indexOf(p) === 0) {
+          return { log: logBuffer[i], kind: 'stopped' };
+        }
+      }
+    }
+    return null;
+  }
+
+  function markPreviousSessionAsCrash(reason) {
+    const lastSession = sessions[sessions.length - 1];
+    if (lastSession && !lastSession.endReason) {
+      lastSession.endAt = (previousState && previousState.ts) || Date.now();
+      lastSession.endReason = reason;
+      if (previousState) {
+        if (typeof previousState.pagesCompleted === 'number') {
+          lastSession.pagesCompleted = previousState.pagesCompleted;
+        }
+        if (typeof previousState.loops === 'number') {
+          lastSession.loops = previousState.loops;
+        }
+      }
+      flushSessions();
+    }
+  }
+
   function detectPreviousCrash() {
     const hb = safeRead(HEARTBEAT_KEY);
     previousState = hb;
+
     let lastTabTs = 0;
     try { lastTabTs = Number(sessionStorage.getItem(TAB_KEY)) || 0; } catch (e) {}
     try { sessionStorage.setItem(TAB_KEY, String(Date.now())); } catch (e) {}
@@ -1272,32 +1334,71 @@
       try { sessionStorage.setItem(TAB_KEY, String(Date.now())); } catch (e) {}
     }, 5000);
 
-    if (!hb || !hb.ts) { log('新 session（無舊 heartbeat）'); return 'fresh'; }
-    const gap = Date.now() - hb.ts;
-    const wasRunning = hb.phase === 'loading' || hb.phase === 'countdown';
+    const gap = (hb && hb.ts) ? Date.now() - hb.ts : -1;
+    const wasRunning = hb && (hb.phase === 'loading' || hb.phase === 'countdown');
+    const isRecent = lastTabTs && (Date.now() - lastTabTs < 5000);
 
-    if (wasRunning && gap > CRASH_GAP_MS) {
-      warn('⚠️ 偵測到上次異常結束', {
-        gapMs: gap, phase: hb.phase, page: hb.page,
-        pagesCompleted: hb.pagesCompleted, loops: hb.loops
-      });
-      if (hb.sessionId) {
-        const prevSess = sessions.find(s => s.id === hb.sessionId);
-        if (prevSess && !prevSess.endReason) {
-          prevSess.endAt = hb.ts;
-          prevSess.endReason = 'crash';
-          prevSess.pagesCompleted = hb.pagesCompleted || prevSess.pagesCompleted;
-          prevSess.loops = hb.loops || prevSess.loops;
-          flushSessions();
-        }
+    const lastSession = sessions[sessions.length - 1];
+    const sessionEndedCleanly = !!(lastSession && lastSession.endReason);
+
+    /* 分析 last session 期間的最後一條關鍵 log */
+    const sessionStartAt = lastSession ? lastSession.startAt : 0;
+    const lastKeyLog = findLastKeyLogSince(sessionStartAt);
+    const lastWasPlaying = lastKeyLog && lastKeyLog.kind === 'playing';
+
+    /* Case A：上次 session 有 endReason（正常結束） */
+    if (sessionEndedCleanly) {
+      /* 若 heartbeat 仍在跑且 tab 剛活躍 → 可能是 reload */
+      if (wasRunning && gap >= 0 && gap < 5000) {
+        warn('⚠️ 頁面疑似被 reload（上次已結束但 heartbeat 仍運行中）', {
+          gap, phase: hb.phase, endReason: lastSession.endReason
+        });
+        return 'reload';
       }
+      log('上次 session 正常結束：' + lastSession.endReason);
+      return 'normal';
+    }
+
+    /* Case B：heartbeat phase = 'closing'（用戶主動關閉瀏覽器） */
+    if (hb && hb.phase === 'closing') {
+      if (isRecent) {
+        warn('⚠️ 頁面疑似被 reload（closing + tab 剛活躍）', { gap });
+        markPreviousSessionAsCrash('reload');
+        return 'reload';
+      }
+      log('上次頁面被主動關閉（closing），非 crash');
+      return 'normal';
+    }
+
+    /* Case C：last session 未結束 + 最後關鍵 log 是播放 log */
+    if (lastWasPlaying) {
+      if (isRecent) {
+        warn('⚠️ 頁面疑似被 reload（播放中斷 + tab 剛活躍）', {
+          gap, phase: hb && hb.phase, lastLog: lastKeyLog.log.msg
+        });
+        markPreviousSessionAsCrash('reload');
+        return 'reload';
+      }
+      warn('⚠️ 偵測到上次異常結束（播放中斷）', {
+        gap, phase: hb && hb.phase, lastLog: lastKeyLog.log.msg
+      });
+      markPreviousSessionAsCrash('crash');
       return 'crash';
     }
-    if (wasRunning && lastTabTs && Date.now() - lastTabTs < 5000) {
-      warn('⚠️ 頁面疑似被 reload', { gapMs: gap, phase: hb.phase, page: hb.page });
-      return 'reload';
+
+    /* Case D：heartbeat 顯示運行中（但 log 無直接證據） */
+    if (wasRunning) {
+      warn('⚠️ 偵測到上次異常結束（heartbeat 運行中）', { gap, phase: hb.phase });
+      markPreviousSessionAsCrash('crash');
+      return 'crash';
     }
-    log('新 session（上次結束於 ' + Math.round(gap / 1000) + 's 前，phase=' + hb.phase + '）');
+
+    /* Case E：正常 */
+    if (!hb || !hb.ts) {
+      log('新 session（無舊 heartbeat）');
+    } else {
+      log('新 session（上次結束於 ' + Math.round(gap / 1000) + 's 前，phase=' + hb.phase + '）');
+    }
     return 'normal';
   }
 
@@ -1360,7 +1461,6 @@
   let iframeEl = null;
   let lastFocusedBeforeModal = null;
 
-  /* ---------- Auto start 持久化 ---------- */
   function loadAutoStart() {
     try {
       const raw = localStorage.getItem(AUTO_START_KEY);
@@ -1825,9 +1925,9 @@
     if (previousState && previousState.sessionId) {
       const prev = sessions.find(s => s.id === previousState.sessionId);
       if (prev) {
-        if (prev.endReason === 'crash') {
+        if (prev.endReason === 'crash' || prev.endReason === 'reload') {
           isCrash = true;
-          lines.push('⚠️ 上次異常結束：' + new Date(prev.startAt).toLocaleString() +
+          lines.push('⚠️ 上次異常結束（' + prev.endReason + '）：' + new Date(prev.startAt).toLocaleString() +
             '，持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt) +
             '，完成 ' + prev.pagesCompleted + ' 頁');
           lines.push('  最後狀態：phase=' + previousState.phase + ' page=' + previousState.page + '/' + previousState.totalPages);
@@ -2019,8 +2119,6 @@
     const remaining = Math.max(0, Math.ceil((crashAutoDeadline - Date.now()) / 1000));
     crashContinueBtn.textContent = crashContinueBaseText() + '（' + remaining + ' 秒後自動）';
   }
-
-  /* Crash 場景：Auto start 倒數（顯示喺「繼續播放」按鈕上） */
   function startCrashAutoContinueCountdown() {
     cancelCrashAuto();
     crashAutoDeadline = Date.now() + AUTO_START_DELAY;
@@ -2101,7 +2199,9 @@
 
   autoStartEl.addEventListener('change', () => {
     saveAutoStart();
-    setStatus(null, autoStartEl.checked ? '已啟用自動開始（下次載入時生效）' : '已停用自動開始');
+    setStatus(null, autoStartEl.checked
+        ? '已啟用自動開始（下次載入時生效）'
+        : '已停用自動開始');
     log('autoStart toggle', { on: autoStartEl.checked });
   });
 
