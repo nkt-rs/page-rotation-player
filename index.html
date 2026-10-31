@@ -14,20 +14,20 @@
     --danger: #dc2626;
     --stepper-bg: #eef2ff;
 
-    --fs-h1:              clamp(18px, 2.6vmin, 5.2vmin);
-    --fs-sub:             clamp(11px, 1.4vmin, 2.8vmin);
-    --fs-label:           clamp(11px, 1.5vmin, 3vmin);
-    --fs-input:           clamp(13px, 1.9vmin, 3.8vmin);
-    --fs-hint:            clamp(10px, 1.2vmin, 2.4vmin);
-    --fs-step:            clamp(15px, 2.2vmin, 4.4vmin);
-    --fs-step-dec:        clamp(11px, 1.5vmin, 3vmin);
-    --fs-btn:             clamp(14px, 1.9vmin, 3.8vmin);
-    --fs-summary:         clamp(11px, 1.4vmin, 2.8vmin);
-    --fs-status:          clamp(12px, 1.5vmin, 3vmin);
-    --fs-checkbox:        clamp(12px, 1.6vmin, 3.2vmin);
-    --fs-checkbox-small:  clamp(10px, 1.2vmin, 2.4vmin);
-    --fs-code:            clamp(11px, 1.5vmin, 2.9vmin);
-    --fs-start:           clamp(16px, 2.2vmin, 4.2vmin);
+    --fs-h1: clamp(18px, 2.6vmin, 5.2vmin);
+    --fs-sub: clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-label: clamp(11px, 1.5vmin, 3vmin);
+    --fs-input: clamp(13px, 1.9vmin, 3.8vmin);
+    --fs-hint: clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-step: clamp(15px, 2.2vmin, 4.4vmin);
+    --fs-step-dec: clamp(11px, 1.5vmin, 3vmin);
+    --fs-btn: clamp(14px, 1.9vmin, 3.8vmin);
+    --fs-summary: clamp(11px, 1.4vmin, 2.8vmin);
+    --fs-status: clamp(12px, 1.5vmin, 3vmin);
+    --fs-checkbox: clamp(12px, 1.6vmin, 3.2vmin);
+    --fs-checkbox-small: clamp(10px, 1.2vmin, 2.4vmin);
+    --fs-code: clamp(11px, 1.5vmin, 2.9vmin);
+    --fs-start: clamp(16px, 2.2vmin, 4.2vmin);
 
     --gap-xs: clamp(2px, 0.4vmin, 0.8vmin);
     --gap-sm: clamp(3px, 0.6vmin, 1.2vmin);
@@ -35,8 +35,8 @@
     --gap-lg: clamp(8px, 1.4vmin, 2.8vmin);
     --gap-xl: clamp(12px, 2vmin, 4vmin);
 
-    --input-pad-v:   clamp(7px, 1.1vmin, 2.2vmin);
-    --input-pad-h:   clamp(8px, 1.2vmin, 2.4vmin);
+    --input-pad-v: clamp(7px, 1.1vmin, 2.2vmin);
+    --input-pad-h: clamp(8px, 1.2vmin, 2.4vmin);
     --summary-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
     --summary-pad-h: clamp(10px, 1.5vmin, 3vmin);
     --checkbox-pad-v: clamp(8px, 1.2vmin, 2.4vmin);
@@ -47,11 +47,11 @@
     --radius-lg: clamp(10px, 1.5vmin, 3vmin);
     --radius-xl: clamp(14px, 1.8vmin, 3.6vmin);
 
-    --step-btn-w:    clamp(46px, 6vmin, 12vmin);
-    --step-btn-h:    clamp(42px, 5.5vmin, 11vmin);
+    --step-btn-w: clamp(46px, 6vmin, 12vmin);
+    --step-btn-h: clamp(42px, 5.5vmin, 11vmin);
     --checkbox-size: clamp(18px, 2.4vmin, 4.8vmin);
-    --corner-size:   clamp(64px, 10vmin, 20vmin);
-    --header-h:      clamp(64px, 8.5vmin, 120px);
+    --corner-size: clamp(64px, 10vmin, 20vmin);
+    --header-h: clamp(64px, 8.5vmin, 120px);
   }
 
   * { box-sizing: border-box; }
@@ -61,8 +61,7 @@
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                 Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #fff;
     color: var(--text);
     -webkit-tap-highlight-color: transparent;
@@ -78,9 +77,6 @@
     background: #fff;
   }
 
-  /* ============================================================
-     Header
-     ============================================================ */
   .app-header {
     display: flex;
     align-items: stretch;
@@ -213,7 +209,6 @@
     filter: grayscale(.3);
   }
 
-  /* ---------- Settings Grid ---------- */
   .settings-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -233,6 +228,7 @@
   }
   .address-field,
   .loop-field,
+  .autostart-field,
   .remember-field { grid-column: 1 / -1; }
 
   label {
@@ -337,8 +333,7 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     white-space: nowrap;
-    transition: background-color .12s, color .12s, box-shadow .12s,
-                border-color .12s, transform .06s;
+    transition: background-color .12s, color .12s, box-shadow .12s, border-color .12s, transform .06s;
   }
   .step-btn.dec { font-size: var(--fs-step-dec); }
   .step-btn:focus {
@@ -403,6 +398,11 @@
     color: var(--muted);
   }
 
+  .checkbox-field.autostart-on {
+    border-color: #fde68a;
+    background: #fffbeb;
+  }
+
   .summary {
     padding: var(--summary-pad-v) var(--summary-pad-h);
     margin: 0 var(--gap-md);
@@ -454,6 +454,7 @@
     background: #fffbeb;
     border-color: #fde68a;
     border-style: solid;
+    font-weight: 800;
   }
   .status.done {
     color: #3730a3;
@@ -473,9 +474,6 @@
     background: #fff;
   }
 
-  /* ============================================================
-     四角熱區
-     ============================================================ */
   .corner-stop {
     position: fixed;
     width: var(--corner-size);
@@ -492,32 +490,26 @@
 
   .corner-stop[data-stop]:focus {
     background: rgba(220, 38, 38, .22);
-    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
-                0 6px 22px rgba(0, 0, 0, .45);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95), 0 6px 22px rgba(0, 0, 0, .45);
   }
   .corner-stop[data-stop]:active { background: rgba(220, 38, 38, .55); }
 
   .corner-stop[data-prev]:focus {
     background: rgba(245, 158, 11, .35);
-    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
-                0 6px 22px rgba(0, 0, 0, .45);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95), 0 6px 22px rgba(0, 0, 0, .45);
   }
   .corner-stop[data-prev]:active { background: rgba(245, 158, 11, .65); }
 
   .corner-stop[data-next]:focus {
     background: rgba(34, 197, 94, .35);
-    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95),
-                0 6px 22px rgba(0, 0, 0, .45);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .95), 0 6px 22px rgba(0, 0, 0, .45);
   }
   .corner-stop[data-next]:active { background: rgba(34, 197, 94, .65); }
 
-  .corner-stop.tr { top: 0;    right: 0; }
-  .corner-stop.bl { bottom: 0; left: 0;  }
+  .corner-stop.tr { top: 0; right: 0; }
+  .corner-stop.bl { bottom: 0; left: 0; }
   .corner-stop.br { bottom: 0; right: 0; }
 
-  /* ============================================================
-     Modal 全屏
-     ============================================================ */
   .modal {
     position: fixed;
     inset: 0;
@@ -579,7 +571,6 @@
     flex-wrap: wrap;
   }
 
-  /* Modal 按鈕：貼邊、無圓角 */
   .modal-btn {
     display: inline-flex;
     align-items: center;
@@ -668,12 +659,9 @@
     word-break: break-word;
   }
   .modal-msg[hidden] { display: none; }
-  .modal-msg.error   { color: var(--danger); background: #fef2f2; }
-  .modal-msg.success { color: #065f46;      background: #ecfdf5; }
+  .modal-msg.error { color: var(--danger); background: #fef2f2; }
+  .modal-msg.success { color: #065f46; background: #ecfdf5; }
 
-  /* ============================================================
-     JSON Modal
-     ============================================================ */
   #jsonText {
     flex: 1 1 auto;
     width: 100%;
@@ -697,9 +685,6 @@
     box-shadow: 0 0 0 3px rgba(79, 70, 229, .2);
   }
 
-  /* ============================================================
-     Log Modal
-     ============================================================ */
   .log-count {
     font-size: var(--fs-sub);
     font-weight: 600;
@@ -773,9 +758,6 @@
   .log-entry.warn { color: #fbbf24; }
   .log-entry.crit { color: #f87171; }
 
-  /* ============================================================
-     Crash Report Modal
-     ============================================================ */
   .modal-header.crash-header {
     border-bottom: 2px solid #fecaca;
   }
@@ -888,13 +870,11 @@
   .crash-logs .cr.warn .m { color: #fbbf24; }
   .crash-logs .cr.crit .m { color: #f87171; }
 
-  /* ============================================================
-     響應式
-     ============================================================ */
   @media (max-width: 1000px) {
     .settings-grid { grid-template-columns: 1fr; }
     .address-field,
     .loop-field,
+    .autostart-field,
     .remember-field { grid-column: auto; }
   }
 
@@ -987,12 +967,8 @@
       </div>
 
       <div class="header-actions">
-        <button type="button" class="header-btn" id="logBtn" aria-haspopup="dialog">
-          Log
-        </button>
-        <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">
-          { } JSON
-        </button>
+        <button type="button" class="header-btn" id="logBtn" aria-haspopup="dialog">Log</button>
+        <button type="button" class="header-btn" id="openJsonBtn" aria-haspopup="dialog">{ } JSON</button>
         <button type="button" id="stopBtn" disabled>STOP</button>
       </div>
     </header>
@@ -1060,6 +1036,16 @@
         </label>
       </div>
 
+      <div class="field autostart-field">
+        <label class="checkbox-field" id="autoStartField" for="autoStartToggle">
+          <input type="checkbox" id="autoStartToggle" />
+          <span class="toggle-text">
+            Auto start after 5s（自動開始）
+            <small>每次載入到此頁面時，5 秒倒數後自動按 Start（按任何鍵 / 點擊取消）</small>
+          </span>
+        </label>
+      </div>
+
       <div class="field remember-field">
         <label class="checkbox-field" for="rememberToggle">
           <input type="checkbox" id="rememberToggle" />
@@ -1078,7 +1064,6 @@
     </div>
   </div>
 
-  <!-- JSON Modal -->
   <div class="modal" id="jsonModal" hidden role="dialog" aria-modal="true" aria-labelledby="jsonModalTitle">
     <div class="modal-panel">
       <div class="modal-header">
@@ -1092,14 +1077,12 @@
         </div>
       </div>
       <div class="modal-body">
-        <textarea id="jsonText" spellcheck="false" autocomplete="off"
-                  aria-label="Settings JSON"></textarea>
+        <textarea id="jsonText" spellcheck="false" autocomplete="off" aria-label="Settings JSON"></textarea>
         <div class="modal-msg" id="jsonMsg" hidden></div>
       </div>
     </div>
   </div>
 
-  <!-- Log Modal（所有按鈕在頂部：▲▼ / Clear / Copy / ×） -->
   <div class="modal" id="logModal" hidden role="dialog" aria-modal="true" aria-labelledby="logModalTitle">
     <div class="modal-panel">
       <div class="modal-header">
@@ -1127,7 +1110,6 @@
     </div>
   </div>
 
-  <!-- Crash Report Modal -->
   <div class="modal" id="crashModal" hidden role="dialog" aria-modal="true" aria-labelledby="crashTitle">
     <div class="modal-panel">
       <div class="modal-header crash-header">
@@ -1151,26 +1133,24 @@
     </div>
   </div>
 
-  <!-- 四角熱區 -->
   <button type="button" class="corner-stop tr" data-stop aria-label="停止"></button>
   <button type="button" class="corner-stop bl" data-prev aria-label="上一頁"></button>
   <button type="button" class="corner-stop br" data-next aria-label="下一頁"></button>
 
 <script>
 (function () {
-  /* ============================================================
-     日誌 / Heartbeat / Session 持久層
-     ============================================================ */
   const LOG_KEY       = 'pageRot.log.v1';
   const SESSION_KEY   = 'pageRot.sessions.v1';
   const HEARTBEAT_KEY = 'pageRot.heartbeat.v1';
   const TAB_KEY       = 'pageRot.tab.v1';
+  const AUTO_START_KEY = 'pageRot.autoStart.v1';
 
   const LOG_MAX        = 250;
   const SESSION_MAX    = 30;
   const FLUSH_DEBOUNCE = 300;
   const HB_INTERVAL    = 10000;
   const CRASH_GAP_MS   = 30000;
+  const AUTO_START_DELAY = 5000;
 
   let logBuffer      = [];
   let sessions       = [];
@@ -1178,6 +1158,10 @@
   let hbTimer        = null;
   let currentSession = null;
   let previousState  = null;
+  let autoStartTimer = null;
+  let autoStartDeadline = 0;
+  let crashAutoTimer = null;
+  let crashAutoDeadline = 0;
 
   function safeRead(key) {
     try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; }
@@ -1229,46 +1213,28 @@
   }
   function startSession(settings) {
     currentSession = {
-      id: newSessionId(),
-      startAt: Date.now(),
-      endAt: null,
-      endReason: null,
-      address: settings.address,
-      mode: settings.mode,
-      totalPages: settings.totalPages,
-      secondsPerPage: settings.secondsPerPage,
-      loop: settings.loop,
-      pagesCompleted: 0,
-      loops: 0,
-      logCount: 0
+      id: newSessionId(), startAt: Date.now(), endAt: null, endReason: null,
+      address: settings.address, mode: settings.mode,
+      totalPages: settings.totalPages, secondsPerPage: settings.secondsPerPage,
+      loop: settings.loop, pagesCompleted: 0, loops: 0, logCount: 0
     };
     sessions.push(currentSession);
     if (sessions.length > SESSION_MAX) sessions.shift();
     flushSessions();
-    log('SESSION 開始', {
-      id: currentSession.id,
-      totalPages: settings.totalPages,
-      sec: settings.secondsPerPage,
-      loop: settings.loop
-    });
+    log('SESSION 開始', { id: currentSession.id, totalPages: settings.totalPages, sec: settings.secondsPerPage, loop: settings.loop });
   }
   function endSession(reason) {
     if (!currentSession) return;
     currentSession.endAt = Date.now();
     currentSession.endReason = reason;
     flushSessions();
-    log('SESSION 結束', {
-      id: currentSession.id,
-      reason,
-      pagesCompleted: currentSession.pagesCompleted
-    });
+    log('SESSION 結束', { id: currentSession.id, reason, pagesCompleted: currentSession.pagesCompleted });
     currentSession = null;
   }
 
   function writeHeartbeat(phase, extra) {
     const hb = {
-      ts: Date.now(),
-      phase,
+      ts: Date.now(), phase,
       page: state ? state.page : 0,
       totalPages: state ? state.totalPages : 0,
       pagesCompleted: currentSession ? currentSession.pagesCompleted : 0,
@@ -1299,7 +1265,6 @@
   function detectPreviousCrash() {
     const hb = safeRead(HEARTBEAT_KEY);
     previousState = hb;
-
     let lastTabTs = 0;
     try { lastTabTs = Number(sessionStorage.getItem(TAB_KEY)) || 0; } catch (e) {}
     try { sessionStorage.setItem(TAB_KEY, String(Date.now())); } catch (e) {}
@@ -1359,20 +1324,22 @@
   const STORAGE_KEY     = 'pageRotationSettings.v1';
   const STORAGE_VERSION = 1;
 
-  const addressEl   = document.getElementById('address');
-  const pageModeEl  = document.getElementById('pageMode');
-  const pageCountEl = document.getElementById('pageCount');
-  const pageTimeEl  = document.getElementById('pageTime');
-  const loopEl      = document.getElementById('loopToggle');
-  const rememberEl  = document.getElementById('rememberToggle');
-  const startBtn    = document.getElementById('startBtn');
-  const stopBtn     = document.getElementById('stopBtn');
-  const summaryEl   = document.getElementById('summary');
-  const statusEl    = document.getElementById('status');
-  const cornerStops = Array.from(document.querySelectorAll('[data-stop]'));
-  const cornerPrev  = Array.from(document.querySelectorAll('[data-prev]'));
-  const cornerNext  = Array.from(document.querySelectorAll('[data-next]'));
-  const stepBtns    = Array.from(document.querySelectorAll('.step-btn'));
+  const addressEl    = document.getElementById('address');
+  const pageModeEl   = document.getElementById('pageMode');
+  const pageCountEl  = document.getElementById('pageCount');
+  const pageTimeEl   = document.getElementById('pageTime');
+  const loopEl       = document.getElementById('loopToggle');
+  const rememberEl   = document.getElementById('rememberToggle');
+  const autoStartEl  = document.getElementById('autoStartToggle');
+  const autoStartField = document.getElementById('autoStartField');
+  const startBtn     = document.getElementById('startBtn');
+  const stopBtn      = document.getElementById('stopBtn');
+  const summaryEl    = document.getElementById('summary');
+  const statusEl     = document.getElementById('status');
+  const cornerStops  = Array.from(document.querySelectorAll('[data-stop]'));
+  const cornerPrev   = Array.from(document.querySelectorAll('[data-prev]'));
+  const cornerNext   = Array.from(document.querySelectorAll('[data-next]'));
+  const stepBtns     = Array.from(document.querySelectorAll('.step-btn'));
 
   const openJsonBtn  = document.getElementById('openJsonBtn');
   const closeJsonBtn = document.getElementById('closeJsonBtn');
@@ -1392,6 +1359,23 @@
   let state = null;
   let iframeEl = null;
   let lastFocusedBeforeModal = null;
+
+  /* ---------- Auto start 持久化 ---------- */
+  function loadAutoStart() {
+    try {
+      const raw = localStorage.getItem(AUTO_START_KEY);
+      if (raw != null) autoStartEl.checked = raw === 'true';
+    } catch (e) {}
+    updateAutoStartFieldStyle();
+  }
+  function saveAutoStart() {
+    try { localStorage.setItem(AUTO_START_KEY, String(autoStartEl.checked)); }
+    catch (e) { warn('autoStart 儲存失敗', e); }
+    updateAutoStartFieldStyle();
+  }
+  function updateAutoStartFieldStyle() {
+    autoStartField.classList.toggle('autostart-on', autoStartEl.checked);
+  }
 
   function readStorage() {
     try {
@@ -1418,6 +1402,7 @@
       pageCount: pageCountEl.value,
       pageTime: pageTimeEl.value,
       loop: loopEl.checked,
+      autoStart: autoStartEl.checked,
       remember: rememberEl.checked
     };
   }
@@ -1439,6 +1424,10 @@
     if (data.pageCount != null)           pageCountEl.value = data.pageCount;
     if (data.pageTime  != null)           pageTimeEl.value  = data.pageTime;
     if (typeof data.loop === 'boolean')   loopEl.checked = data.loop;
+    if (typeof data.autoStart === 'boolean') {
+      autoStartEl.checked = data.autoStart;
+      saveAutoStart();
+    }
     if (typeof data.remember === 'boolean') rememberEl.checked = data.remember;
     log('已套用設定', collectSettings());
     return true;
@@ -1481,8 +1470,7 @@
     if (!Number.isFinite(secondsPerPage) || secondsPerPage < 0.1) errors.pageTime = true;
     return {
       address, mode, totalPages, secondsPerPage, loop,
-      valid: Object.keys(errors).length === 0,
-      errors
+      valid: Object.keys(errors).length === 0, errors
     };
   }
   function refresh() {
@@ -1500,10 +1488,8 @@
     summaryEl.classList.remove('error');
     const total = s.totalPages * s.secondsPerPage;
     summaryEl.textContent = s.loop
-      ? s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
-        ' 秒 = 每輪 ' + fmtSeconds(total) + ' 秒，循環播放'
-      : s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) +
-        ' 秒 = 合共 ' + fmtSeconds(total) + ' 秒，完成後停止';
+      ? s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) + ' 秒 = 每輪 ' + fmtSeconds(total) + ' 秒，循環播放'
+      : s.totalPages + ' 頁 × ' + fmtSeconds(s.secondsPerPage) + ' 秒 = 合共 ' + fmtSeconds(total) + ' 秒，完成後停止';
   }
   function buildPageUrl(base, page, mode) {
     if (mode === 'template') return base.replaceAll('{page}', String(page));
@@ -1517,15 +1503,52 @@
     statusEl.textContent = text;
   }
 
+  /* ---------- Config 頁倒數 ---------- */
+  function beginAutoStartCountdown() {
+    if (autoStartTimer) return;
+    if (state !== null) return;
+    if (!jsonModal.hidden || !logModal.hidden || !crashModal.hidden) return;
+    const s = readSettings();
+    if (!s.valid) { log('自動開始跳過：設定不完整'); return; }
+    autoStartDeadline = Date.now() + AUTO_START_DELAY;
+    updateAutoStartStatus();
+    autoStartTimer = setInterval(() => {
+      const remaining = autoStartDeadline - Date.now();
+      if (remaining <= 0) {
+        cancelAutoStart(false);
+        log('自動開始倒數完結 → 啟動');
+        start();
+        return;
+      }
+      updateAutoStartStatus();
+    }, 100);
+    log('自動開始倒數', { seconds: AUTO_START_DELAY / 1000 });
+  }
+  function updateAutoStartStatus() {
+    const remaining = Math.max(0, Math.ceil((autoStartDeadline - Date.now()) / 1000));
+    setStatus('loading', remaining + ' 秒後自動開始…（按任何鍵 / 點擊取消）');
+  }
+  function cancelAutoStart(showStatus) {
+    if (autoStartTimer) { clearInterval(autoStartTimer); autoStartTimer = null; }
+    autoStartDeadline = 0;
+    if (showStatus) {
+      setStatus(null, '已取消自動開始');
+      log('自動開始已被取消');
+    }
+  }
+  function onPossibleUserCancel() {
+    if (autoStartTimer) cancelAutoStart(true);
+  }
+  document.addEventListener('click', onPossibleUserCancel, { capture: true });
+  document.addEventListener('keydown', onPossibleUserCancel, { capture: true });
+
   function createIframe() {
     removeIframe();
     iframeEl = document.createElement('iframe');
     iframeEl.id = 'viewerFrame';
     iframeEl.title = 'Page viewer';
     iframeEl.addEventListener('load', onFrameLoaded);
-    iframeEl.addEventListener('error', () => {
-      err('iframe error event', { src: iframeEl ? iframeEl.src : '' });
-    });
+    iframeEl.addEventListener('error', () => err('iframe error event', { src: iframeEl ? iframeEl.src : '' }));
     document.body.appendChild(iframeEl);
     document.body.classList.add('viewing');
   }
@@ -1537,29 +1560,21 @@
     }
     document.body.classList.remove('viewing');
   }
-  function clearLoadTimer() {
-    if (loadTimer) { clearTimeout(loadTimer); loadTimer = null; }
-  }
-  function clearTick() {
-    if (tickId) { clearInterval(tickId); tickId = null; }
-  }
+  function clearLoadTimer() { if (loadTimer) { clearTimeout(loadTimer); loadTimer = null; } }
+  function clearTick() { if (tickId) { clearInterval(tickId); tickId = null; } }
+
   function loadPage(pageNumber) {
     if (!state || !iframeEl) return;
     state.page = pageNumber;
     state.phase = 'loading';
-    clearTick();
-    clearLoadTimer();
+    clearTick(); clearLoadTimer();
     pendingLoad = false;
     const url = buildPageUrl(state.address, state.page, state.mode);
     log('loadPage', { page: state.page, url });
     writeHeartbeat('loading', { loadingUrl: url });
     const sameUrl  = (url === lastLoadedUrl);
     const hashOnly = lastLoadedUrl && (stripHash(url) === stripHash(lastLoadedUrl));
-    if (sameUrl) {
-      log('→ URL 相同，毋須 reload，直接倒數');
-      beginCountdown();
-      return;
-    }
+    if (sameUrl) { log('→ URL 相同，毋須 reload，直接倒數'); beginCountdown(); return; }
     if (hashOnly) {
       log('→ 只有 hash 改變，略過等待 load');
       lastLoadedUrl = url;
@@ -1591,11 +1606,7 @@
     state.deadline = Date.now() + state.secondsPerPage * 1000;
     state.phase = 'countdown';
     writeHeartbeat('countdown');
-    log('beginCountdown', {
-      page: state.page,
-      seconds: state.secondsPerPage,
-      deadline: state.deadline
-    });
+    log('beginCountdown', { page: state.page, seconds: state.secondsPerPage, deadline: state.deadline });
     tickId = setInterval(tick, TICK_MS);
   }
   function tick() {
@@ -1606,11 +1617,7 @@
     if (currentSession) {
       currentSession.pagesCompleted += 1;
       if (currentSession.pagesCompleted % 10 === 0) {
-        log('進度', {
-          completed: currentSession.pagesCompleted,
-          page: state.page,
-          loops: currentSession.loops
-        });
+        log('進度', { completed: currentSession.pagesCompleted, page: state.page, loops: currentSession.loops });
       }
     }
     if (state.page >= state.totalPages) {
@@ -1630,29 +1637,20 @@
   function prevPage() {
     if (!state) return;
     log('PREV page', { from: state.page });
-    if (state.page > 1) {
-      loadPage(state.page - 1);
-    } else if (state.loop) {
-      loadPage(state.totalPages);
-    } else {
-      log('→ 已在第 1 頁，重啟當前頁倒數');
-      beginCountdown();
-    }
+    if (state.page > 1) loadPage(state.page - 1);
+    else if (state.loop) loadPage(state.totalPages);
+    else { log('→ 已在第 1 頁，重啟當前頁倒數'); beginCountdown(); }
   }
   function nextPage() {
     if (!state) return;
     log('NEXT page', { from: state.page });
-    if (state.page < state.totalPages) {
-      loadPage(state.page + 1);
-    } else if (state.loop) {
-      loadPage(1);
-    } else {
-      log('全部頁面完成（手動跳過）');
-      finish();
-    }
+    if (state.page < state.totalPages) loadPage(state.page + 1);
+    else if (state.loop) loadPage(1);
+    else { log('全部頁面完成（手動跳過）'); finish(); }
   }
 
   function start() {
+    cancelAutoStart(false);
     const s = readSettings();
     if (!s.valid || state) return;
 
@@ -1663,38 +1661,30 @@
     startSession(s);
 
     state = {
-      address: s.address,
-      mode: s.mode,
-      totalPages: s.totalPages,
-      secondsPerPage: s.secondsPerPage,
-      loop: s.loop,
-      page: 1,
-      deadline: 0,
-      phase: 'loading'
+      address: s.address, mode: s.mode,
+      totalPages: s.totalPages, secondsPerPage: s.secondsPerPage,
+      loop: s.loop, page: 1, deadline: 0, phase: 'loading'
     };
     lastLoadedUrl = null;
     writeHeartbeat('loading');
     startHeartbeat();
 
-    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, autoStartEl, ...stepBtns]
       .forEach(el => (el.disabled = true));
     startBtn.disabled = true;
     stopBtn.disabled = false;
 
-    if (document.activeElement && document.activeElement.blur) {
-      document.activeElement.blur();
-    }
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     createIframe();
     loadPage(1);
   }
   function resetControls() {
     log('resetControls');
-    clearTick();
-    clearLoadTimer();
+    clearTick(); clearLoadTimer();
     pendingLoad = false;
     lastLoadedUrl = null;
     state = null;
-    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, ...stepBtns]
+    [addressEl, pageModeEl, pageCountEl, pageTimeEl, loopEl, rememberEl, autoStartEl, ...stepBtns]
       .forEach(el => (el.disabled = false));
     stopBtn.disabled = true;
     removeIframe();
@@ -1779,9 +1769,7 @@
     }
     applyStoredSettings(parsed);
     if (parsed.version != null && parsed.version !== STORAGE_VERSION) {
-      showJsonMsg('success',
-        '已套用（注意：JSON 版本 v' + parsed.version +
-        '，目前版本 v' + STORAGE_VERSION + '）');
+      showJsonMsg('success', '已套用（注意：JSON 版本 v' + parsed.version + '，目前版本 v' + STORAGE_VERSION + '）');
     } else {
       showJsonMsg('success', '已套用設定');
     }
@@ -1812,8 +1800,7 @@
 
   function fmtTime(ts) {
     const d = new Date(ts); const p = n => String(n).padStart(2, '0');
-    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) +
-           '.' + String(d.getMilliseconds()).padStart(3, '0');
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) + '.' + String(d.getMilliseconds()).padStart(3, '0');
   }
   function fmtTimeShort(ts) {
     const d = new Date(ts); const p = n => String(n).padStart(2, '0');
@@ -1825,7 +1812,6 @@
     return (h ? h + 'h ' : '') + m + 'm ' + sec + 's';
   }
   function fmtLevel(l) { return l === 'crit' ? 'ERR' : l.toUpperCase(); }
-
   function buildLogRow(e) {
     const row = document.createElement('div');
     row.className = 'log-entry ' + e.level;
@@ -1841,22 +1827,18 @@
       if (prev) {
         if (prev.endReason === 'crash') {
           isCrash = true;
-          lines.push('⚠️ 上次異常結束：' +
-            new Date(prev.startAt).toLocaleString() +
+          lines.push('⚠️ 上次異常結束：' + new Date(prev.startAt).toLocaleString() +
             '，持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt) +
             '，完成 ' + prev.pagesCompleted + ' 頁');
-          lines.push('  最後狀態：phase=' + previousState.phase +
-            ' page=' + previousState.page + '/' + previousState.totalPages);
+          lines.push('  最後狀態：phase=' + previousState.phase + ' page=' + previousState.page + '/' + previousState.totalPages);
         } else if (prev.endReason) {
-          lines.push('上次：' + new Date(prev.startAt).toLocaleString() +
-            '，' + prev.endReason + '，完成 ' + prev.pagesCompleted + ' 頁，' +
-            '持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt));
+          lines.push('上次：' + new Date(prev.startAt).toLocaleString() + '，' + prev.endReason +
+            '，完成 ' + prev.pagesCompleted + ' 頁，持續 ' + fmtDuration((prev.endAt || prev.startAt) - prev.startAt));
         }
       }
     }
     if (currentSession) {
-      lines.push('本次：' + new Date(currentSession.startAt).toLocaleString() +
-        '，進行中，完成 ' + currentSession.pagesCompleted + ' 頁');
+      lines.push('本次：' + new Date(currentSession.startAt).toLocaleString() + '，進行中，完成 ' + currentSession.pagesCompleted + ' 頁');
     }
     if (lines.length === 0) { logSessionEl.hidden = true; return; }
     logSessionEl.hidden = false;
@@ -1867,13 +1849,8 @@
   function updateLogThumbNow() {
     thumbRafId = null;
     if (!logList || !logTrack || !logThumb) return;
-    const sh = logList.scrollHeight;
-    const ch = logList.clientHeight;
-    const th = logTrack.clientHeight;
-    if (sh <= ch + 1 || th <= 0) {
-      logThumb.style.display = 'none';
-      return;
-    }
+    const sh = logList.scrollHeight, ch = logList.clientHeight, th = logTrack.clientHeight;
+    if (sh <= ch + 1 || th <= 0) { logThumb.style.display = 'none'; return; }
     logThumb.style.display = '';
     const thumbH = Math.max(24, (ch / sh) * th);
     const maxTop = th - thumbH;
@@ -1891,23 +1868,15 @@
   function renderLogs(scrollBottom) {
     if (!logList) return;
     const wasAtBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 40;
-
-    if (logBuffer.length < renderedCount) {
-      logList.innerHTML = '';
-      renderedCount = 0;
-    }
+    if (logBuffer.length < renderedCount) { logList.innerHTML = ''; renderedCount = 0; }
     if (logBuffer.length > renderedCount) {
       const frag = document.createDocumentFragment();
-      for (let i = renderedCount; i < logBuffer.length; i++) {
-        frag.appendChild(buildLogRow(logBuffer[i]));
-      }
+      for (let i = renderedCount; i < logBuffer.length; i++) frag.appendChild(buildLogRow(logBuffer[i]));
       logList.appendChild(frag);
       renderedCount = logBuffer.length;
     }
-
     logCountEl.textContent = '(' + logBuffer.length + ')';
     renderSessionInfo();
-
     if (scrollBottom || wasAtBottom) logList.scrollTop = logList.scrollHeight;
     scheduleThumbUpdate();
   }
@@ -1915,18 +1884,11 @@
   function scrollLogBy(dir) {
     if (!logList) return;
     const atBottom = logList.scrollHeight - logList.scrollTop - logList.clientHeight < 4;
-    if (dir > 0 && atBottom && logBuffer.length !== renderedCount) {
-      renderLogs(true);
-      return;
-    }
+    if (dir > 0 && atBottom && logBuffer.length !== renderedCount) { renderLogs(true); return; }
     const amount = Math.round(logList.clientHeight * 0.75) * dir;
-    logList.scrollTop = Math.max(0, Math.min(
-      logList.scrollHeight - logList.clientHeight,
-      logList.scrollTop + amount
-    ));
+    logList.scrollTop = Math.max(0, Math.min(logList.scrollHeight - logList.clientHeight, logList.scrollTop + amount));
     scheduleThumbUpdate();
   }
-
   function jumpLogTo(ratio) {
     if (!logList) return;
     ratio = Math.max(0, Math.min(1, ratio));
@@ -1960,9 +1922,7 @@
     renderLogs(true);
   }
   async function copyLogs() {
-    const text = logBuffer.map(e =>
-      fmtTime(e.t) + ' ' + fmtLevel(e.level) + ' ' + e.msg
-    ).join('\n');
+    const text = logBuffer.map(e => fmtTime(e.t) + ' ' + fmtLevel(e.level) + ' ' + e.msg).join('\n');
     let ok = false;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1995,16 +1955,14 @@
   function pickCrashLogs(max) {
     const recent = logBuffer.slice(-30);
     const pick = new Set();
-    recent.filter(e => e.level === 'warn' || e.level === 'crit')
-          .slice(-max).forEach(e => pick.add(e));
+    recent.filter(e => e.level === 'warn' || e.level === 'crit').slice(-max).forEach(e => pick.add(e));
     for (let i = recent.length - 1; i >= 0 && pick.size < max; i--) pick.add(recent[i]);
     return Array.from(pick).sort((a, b) => a.t - b.t);
   }
   function renderCrashModal() {
     const hb = previousState || {};
     const prev = hb.sessionId ? sessions.find(s => s.id === hb.sessionId) : null;
-    crashSubEl.textContent = '偵測於 ' + new Date().toLocaleString() +
-      (hb.ts ? '｜最後存活 ' + new Date(hb.ts).toLocaleString() : '');
+    crashSubEl.textContent = '偵測於 ' + new Date().toLocaleString() + (hb.ts ? '｜最後存活 ' + new Date(hb.ts).toLocaleString() : '');
 
     const cells = [];
     if (prev) {
@@ -2016,11 +1974,7 @@
       cells.push({ k: '完成頁數', v: (hb.pagesCompleted || 0) + ' / ' + (hb.totalPages || '?') });
       cells.push({ k: '循環', v: String(hb.loops || 0) + ' 次' });
     }
-    cells.push({
-      k: '最後狀態',
-      v: hb.phase || '?',
-      bad: hb.phase === 'loading' || hb.phase === 'countdown'
-    });
+    cells.push({ k: '最後狀態', v: hb.phase || '?', bad: hb.phase === 'loading' || hb.phase === 'countdown' });
     cells.push({ k: '最後頁碼', v: hb.page ? (hb.page + ' / ' + hb.totalPages) : '?' });
 
     crashInfoEl.innerHTML = '';
@@ -2052,21 +2006,61 @@
         row.append(t, m); crashLogsEl.appendChild(row);
       });
     }
-    crashContinueBtn.textContent = hb.address ? '繼續播放' : '繼續（用目前設定）';
+    updateCrashContinueBtnBase();
   }
+
+  function crashContinueBaseText() {
+    return (previousState && previousState.address) ? '繼續播放' : '繼續（用目前設定）';
+  }
+  function updateCrashContinueBtnBase() {
+    if (!crashAutoTimer) crashContinueBtn.textContent = crashContinueBaseText();
+  }
+  function updateCrashAutoBtnText() {
+    const remaining = Math.max(0, Math.ceil((crashAutoDeadline - Date.now()) / 1000));
+    crashContinueBtn.textContent = crashContinueBaseText() + '（' + remaining + ' 秒後自動）';
+  }
+
+  /* Crash 場景：Auto start 倒數（顯示喺「繼續播放」按鈕上） */
+  function startCrashAutoContinueCountdown() {
+    cancelCrashAuto();
+    crashAutoDeadline = Date.now() + AUTO_START_DELAY;
+    updateCrashAutoBtnText();
+    crashAutoTimer = setInterval(() => {
+      const remaining = crashAutoDeadline - Date.now();
+      if (remaining <= 0) {
+        cancelCrashAuto();
+        log('Crash modal 倒數完結 → 自動繼續播放');
+        crashContinue();
+        return;
+      }
+      updateCrashAutoBtnText();
+    }, 100);
+    log('Crash modal 自動繼續倒數', { seconds: AUTO_START_DELAY / 1000 });
+  }
+  function cancelCrashAuto() {
+    if (crashAutoTimer) { clearInterval(crashAutoTimer); crashAutoTimer = null; }
+    crashAutoDeadline = 0;
+    crashContinueBtn.textContent = crashContinueBaseText();
+  }
+
   function openCrashModal() {
     closeJsonModal();
     closeLogModal();
     renderCrashModal();
     crashModal.hidden = false;
     log('打開 Crash Report modal');
+    if (autoStartEl.checked) {
+      startCrashAutoContinueCountdown();
+    }
   }
   function closeCrashModal() {
     if (crashModal.hidden) return;
+    cancelCrashAuto();
     crashModal.hidden = true;
     log('關閉 Crash Report modal');
   }
   function crashContinue() {
+    cancelCrashAuto();
     const hb = previousState || {};
     if (hb.address) {
       addressEl.value = hb.address;
@@ -2082,7 +2076,7 @@
       closeCrashModal();
       return;
     }
-    log('CRASH → 使用者選擇繼續播放');
+    log('CRASH → 選擇繼續播放（手動或自動）');
     closeCrashModal();
     setTimeout(start, 80);
   }
@@ -2094,6 +2088,7 @@
     el.addEventListener('input', () => { refresh(); maybePersist(); });
     el.addEventListener('change', () => { refresh(); maybePersist(); });
   });
+
   rememberEl.addEventListener('change', () => {
     if (rememberEl.checked) {
       writeStorage(collectSettings());
@@ -2103,9 +2098,14 @@
       setStatus(null, '已取消記住設定');
     }
   });
-  stepBtns.forEach(btn => btn.addEventListener('click', () => {
-    applyStep(btn); maybePersist();
-  }));
+
+  autoStartEl.addEventListener('change', () => {
+    saveAutoStart();
+    setStatus(null, autoStartEl.checked ? '已啟用自動開始（下次載入時生效）' : '已停用自動開始');
+    log('autoStart toggle', { on: autoStartEl.checked });
+  });
+
+  stepBtns.forEach(btn => btn.addEventListener('click', () => { applyStep(btn); maybePersist(); }));
   startBtn.addEventListener('click', start);
   stopBtn.addEventListener('click', stop);
 
@@ -2146,9 +2146,7 @@
       return;
     }
     if (!logModal.hidden) {
-      if (key === 'Escape' || code === 27 || code === 8) {
-        e.preventDefault(); closeLogModal(); return;
-      }
+      if (key === 'Escape' || code === 27 || code === 8) { e.preventDefault(); closeLogModal(); return; }
       if (key === 'ArrowUp'    || code === 38) { e.preventDefault(); scrollLogBy(-1); return; }
       if (key === 'ArrowDown'  || code === 40) { e.preventDefault(); scrollLogBy(1);  return; }
       if (key === 'ArrowLeft'  || code === 37) { e.preventDefault(); scrollLogBy(-3); return; }
@@ -2182,6 +2180,8 @@
   /* ============================================================
      初始化
      ============================================================ */
+  loadAutoStart();   /* 先讀取獨立保存的 autoStart */
+
   const stored = readStorage();
   if (stored && stored.remember) {
     applyStoredSettings(stored);
@@ -2197,8 +2197,16 @@
   startHeartbeat();
   writeHeartbeat('idle');
 
-  if (prevResult === 'crash' || prevResult === 'reload') {
-    setTimeout(openCrashModal, 600);
+  const hasIssue = (prevResult === 'crash' || prevResult === 'reload');
+  if (hasIssue) {
+    /* 慢 600ms 打開 crash modal，讓畫面先穩定 */
+    setTimeout(() => {
+      openCrashModal();
+      /* openCrashModal 內會根據 autoStartEl.checked 啟動 5 秒倒數 */
+    }, 600);
+  } else if (autoStartEl.checked) {
+    /* 正常場景：config 頁 5 秒倒數 */
+    beginAutoStartCountdown();
   }
 
   log('頁面載入完成，等待操作');
